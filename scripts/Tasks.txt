@@ -1,0 +1,129 @@
+24.04.24
+
+This script is capable of turning text into lines while also preserving the insertion points and heights of the text entities. I would now like the lines, that resemble the former text entities, to also have the same orientation/rotation as the text entities used to have. 
+Do you have a solution for that using the ezdxf library? 
+
+
+Layer Manipulation
+- Entities
+	- Layers
+		- colors
+			- form dictionary
+		- switch all on
+		- unlock all
+		- unfreeze all
+		- 
+	- Lines
+		- Set attributes according to requirements
+	- Polylines
+		- Set attributes according to requirements
+	- Circles
+		- Set attributes according to requirements
+	- Points
+		- Set attributes according to requirements
+	- Texts
+		- Set attributes according to requirements
+	- Arches
+		- Set attributes according to requirements
+
+TEXT2LINES
+- text 2 lines
+	- getting
+		- Text
+			- Position
+			- height
+	- convert text 2 lines
+		- insert lines at original position with original height
+	- create block containing all lines
+		- rotate block
+			- get rotation from text entities
+
+
+
+msp.query('LINE')
+for line in lines 
+	lines_block.add_line()
+
+25.04.24
+Text2Lines_Preserved_InsertionPoint_Height.py
+- Rotation Matrix to take rotation values, which are the rotation angles by which the original text entities have been rotated
+- Some of the text entities get inserted in the wrong locations
+	- Possible issues
+		- Coordinate System Differences
+		- Incorrect Insertion Points
+		- Transformation issues
+			- Translation and rotation needs to be applied in the correct order
+		- Scaling Factors
+			- Maybe check for scaling factors that have been applied to the texts
+				- If there were some ... normalize
+		- Block references
+			- Try getting rid of them first
+				- There is now a simple routine to explode blocks
+		- Misinterpretation of the position Tuple
+	
+	- Possible checklist
+		- Verify that the correct insertion points are being extracted from the original text entities.
+		- Print the insertion points before and after the transformation to ensure they're being transformed as expected.
+		- Make sure the transformation matrix is being applied correctly. You might want to test with known values to ensure the transformation is functioning as intended.
+		- If the text is inside a block, apply the block reference transformations to the text entity's transformation.
+		- Check if the DXF file has any UCS (User Coordinate System) that could be affecting the entity coordinates.
+
+Dimensions
+- Explode them the same way I explode blocks
+	- search for all the different entities, create a copy, and then delete initial dimensions
+
+
+
+
+26.04.24
+Georef
+- Checker für WMS erstellt und getestet
+	- Checker anpassen für QM Datenaufbereitung: prüfen ob Achsraster von projektiertem Gebäude und neu georeferenzierter Datei innerhalb einer gewissen Toleranz liegen
+
+Dimensions
+- Explode Skript erstellt und getestet
+	- Ansatz mit nach Entities suchen innerhalb der Bemassung, diese kopieren, in Mapspace einfügen und anschliessend ursprüngliche Dims löschen --> funktioniert
+
+Hatches
+- löschen 
+
+
+29.04.24
+- Blockreferenz -> Explode Blocks Sophisticated
+- Bemassung -> Explode Dimensions
+- MText -> Explode MText
+- Schraffur -> Delete Hatches
+- Kreis -> origin entity
+- Polylinie -> explode to Lines
+- Linie -> origin entity
+- Text 2 Lines ? -> Maybe ? :D
+
+- Check scaling 
+	- I don't think the scaling is the problem. 
+		- Rotation and size of the text are correct. 
+	--> Insertion points get fucked during ... for whateverthefuck reason they're not correct 
+		- Maybe split it in different classes?
+			- One class for 
+
+- Insertion Point correct (wellThen.dxf): 2275.344, 1564.701
+- Insertion Point fucked up: 374.1873, 2736.1477
+	- maybe ... maybe ... the rotation happens around the 0, 0, 0 coordinate of the mapspace ...
+		- that would then mean I'd have to rotate all entities at 0, 0, 0 or calculate an "offset" for each insertion point to account for the error.
+
+
+30.04.24
+- Playing with rotations and the corresponding matrices
+	- figured out that rotations have to happen at 0, 0, 0 in the global coordinate system. 
+		- Therefore if something needs to be rotated, the entity first needs to be moved to 0, 0, 0, then rotated and then moved back 
+
+- Create a .exe for mid
+	- Burst 
+		- Blocks
+		- Dimensions 
+		- MText
+	- Generate boundry lines around hatches
+	- Delete hatches
+	- Delete double lines
+	- Text 2 lines
+
+- Write another script to join partial lines to one line 
