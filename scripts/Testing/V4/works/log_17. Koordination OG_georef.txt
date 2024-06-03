@@ -1,0 +1,36 @@
+20240522_13:57:39 - Georeference Check - The plan is georeferenced.: SUCCESS
+20240522_13:57:42 - Blocks have been exploded 1 - No extra info: SUCCESS
+20240522_13:57:45 - Blocks have been exploded 2 - No extra info: SUCCESS
+20240522_13:57:48 - Blocks have been exploded 3 - No extra info: SUCCESS
+20240522_13:57:51 - Blocks have been exploded 4 - No extra info: SUCCESS
+20240522_13:57:54 - Blocks have been exploded 5 - No extra info: SUCCESS
+20240522_13:57:57 - Dimensions have been exploded - No extra info: SUCCESS
+20240522_13:58:00 - MText has been exploded - No extra info: SUCCESS
+20240522_13:58:01 - Text, positions, heights and rotation angles have been extracted - No extra info: SUCCESS
+20240522_13:58:03 - Text boundary lines have been created - No extra info: SUCCESS
+20240522_13:58:03 - Polylines have been converted to lines - No extra info: SUCCESS
+20240522_13:58:04 - Splines have been converted to lines - No extra info: SUCCESS
+20240522_13:58:04 - Boundary lines have been created for all hatches - No extra info: SUCCESS
+20240522_13:58:04 - Hatch entities have been deleted - No extra info: SUCCESS
+20240522_13:58:04 - Text entities have been deleted - No extra info: SUCCESS
+20240522_13:58:04 - MText entities have been deleted - No extra info: SUCCESS
+20240522_13:58:04 - Point entities have been deleted - No extra info: SUCCESS
+20240522_13:58:04 - Body entities have been deleted - No extra info: SUCCESS
+20240522_13:58:04 - Image entities have been deleted - No extra info: SUCCESS
+20240522_13:58:04 - Wipeout entities have been deleted - No extra info: SUCCESS
+20240522_13:58:04 - Solid entities have been deleted - No extra info: SUCCESS
+20240522_13:58:04 - 3DSolid entities have been deleted - No extra info: SUCCESS
+20240522_13:58:04 - Layers have been renamed according to WMS naming convention - No extra info: SUCCESS
+20240522_13:58:09 - Block have been exploded one more time - No extra info: SUCCESS
+20240522_13:58:09 - cleanup C:\Users\mbuechel\Desktop\ToDo\Automation\DXFAutomation\Scripts\Testing\V4\intermediate_file1.dxf - No extra info: SUCCESS
+20240522_13:58:09 - cleanup C:\Users\mbuechel\Desktop\ToDo\Automation\DXFAutomation\Scripts\Testing\V4\intermediate_file2.dxf - No extra info: SUCCESS
+20240522_13:58:09 - cleanup C:\Users\mbuechel\Desktop\ToDo\Automation\DXFAutomation\Scripts\Testing\V4\intermediate_file3.dxf - No extra info: SUCCESS
+20240522_13:58:09 - cleanup C:\Users\mbuechel\Desktop\ToDo\Automation\DXFAutomation\Scripts\Testing\V4\intermediate_file4.dxf - No extra info: SUCCESS
+20240522_13:58:09 - cleanup C:\Users\mbuechel\Desktop\ToDo\Automation\DXFAutomation\Scripts\Testing\V4\intermediate_file5.dxf - No extra info: SUCCESS
+20240522_13:58:09 - cleanup C:\Users\mbuechel\Desktop\ToDo\Automation\DXFAutomation\Scripts\Testing\V4\intermediate_file6.dxf - No extra info: SUCCESS
+20240522_13:58:12 - Entity Count - No extra info: SUCCESS
+20240522_13:58:12 - LINE: 31365 - No extra info: SUCCESS
+20240522_13:58:12 - CIRCLE: 1150 - No extra info: SUCCESS
+20240522_13:58:12 - ARC: 803 - No extra info: SUCCESS
+20240522_13:58:12 - ELLIPSE: 587 - No extra info: SUCCESS
+20240522_13:58:12 - Total Execution Time  - 32.46 seconds: SUCCESS

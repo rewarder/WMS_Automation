@@ -1,0 +1,41 @@
+20240523_15:14:48 - Georeference Check - The plan is georeferenced.: SUCCESS
+20240523_15:14:53 - Blocks have been exploded 1 - No extra info: SUCCESS
+20240523_15:14:58 - Blocks have been exploded 2 - No extra info: SUCCESS
+20240523_15:15:03 - Blocks have been exploded 3 - No extra info: SUCCESS
+20240523_15:15:09 - Blocks have been exploded 4 - No extra info: SUCCESS
+20240523_15:15:14 - Blocks have been exploded 5 - No extra info: SUCCESS
+20240523_15:15:19 - Dimensions have been exploded - No extra info: SUCCESS
+20240523_15:15:25 - MText has been exploded - No extra info: SUCCESS
+20240523_15:15:28 - Text, positions, heights and rotation angles have been extracted - No extra info: SUCCESS
+20240523_15:15:32 - Text boundary lines have been created - No extra info: SUCCESS
+20240523_15:15:37 - Polylines have been converted to lines - No extra info: SUCCESS
+20240523_15:15:37 - Splines have been converted to lines - No extra info: SUCCESS
+20240523_15:15:37 - 2D Polylines have been converted to lines - No extra info: SUCCESS
+20240523_15:15:37 - 3D Polylines have been converted to lines - No extra info: SUCCESS
+20240523_15:15:37 - Boundary lines have been created for all hatches - No extra info: SUCCESS
+20240523_15:15:37 - 3DFace boundary lines have been created - No extra info: SUCCESS
+20240523_15:15:38 - 3DFace entities have been deleted - No extra info: SUCCESS
+20240523_15:15:38 - MPolygon entities have been deleted - No extra info: SUCCESS
+20240523_15:15:38 - Polyline entities have been deleted - No extra info: SUCCESS
+20240523_15:15:38 - Hatch entities have been deleted - No extra info: SUCCESS
+20240523_15:15:39 - Text entities have been deleted - No extra info: SUCCESS
+20240523_15:15:39 - MText entities have been deleted - No extra info: SUCCESS
+20240523_15:15:39 - Point entities have been deleted - No extra info: SUCCESS
+20240523_15:15:39 - Body entities have been deleted - No extra info: SUCCESS
+20240523_15:15:39 - Image entities have been deleted - No extra info: SUCCESS
+20240523_15:15:39 - Wipeout entities have been deleted - No extra info: SUCCESS
+20240523_15:15:40 - Solid entities have been deleted - No extra info: SUCCESS
+20240523_15:15:40 - 3DSolid entities have been deleted - No extra info: SUCCESS
+20240523_15:15:45 - Layers have been renamed according to WMS naming convention - No extra info: SUCCESS
+20240523_15:16:00 - Block have been exploded one more time - No extra info: SUCCESS
+20240523_15:16:00 - cleanup C:\Users\mbuechel\Desktop\ToDo\Automation\DXFAutomation\Scripts\Version5\dist\intermediate_file1.dxf - No extra info: SUCCESS
+20240523_15:16:00 - cleanup C:\Users\mbuechel\Desktop\ToDo\Automation\DXFAutomation\Scripts\Version5\dist\intermediate_file2.dxf - No extra info: SUCCESS
+20240523_15:16:00 - cleanup C:\Users\mbuechel\Desktop\ToDo\Automation\DXFAutomation\Scripts\Version5\dist\intermediate_file3.dxf - No extra info: SUCCESS
+20240523_15:16:00 - cleanup C:\Users\mbuechel\Desktop\ToDo\Automation\DXFAutomation\Scripts\Version5\dist\intermediate_file4.dxf - No extra info: SUCCESS
+20240523_15:16:00 - cleanup C:\Users\mbuechel\Desktop\ToDo\Automation\DXFAutomation\Scripts\Version5\dist\intermediate_file5.dxf - No extra info: SUCCESS
+20240523_15:16:00 - cleanup C:\Users\mbuechel\Desktop\ToDo\Automation\DXFAutomation\Scripts\Version5\dist\intermediate_file6.dxf - No extra info: SUCCESS
+20240523_15:16:07 - Entity Count - No extra info: SUCCESS
+20240523_15:16:07 - LINE: 120913 - No extra info: SUCCESS
+20240523_15:16:07 - ARC: 72 - No extra info: SUCCESS
+20240523_15:16:07 - CIRCLE: 496 - No extra info: SUCCESS
+20240523_15:16:07 - Total Execution Time  - 79.08 seconds: SUCCESS
