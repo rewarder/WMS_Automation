@@ -35,10 +35,10 @@ def convert_splines_to_lines(doc, segments=100):
         modelspace.delete_entity(spline)
 
 # Load the DXF document
-doc = ezdxf.readfile("C:/Users/mbuechel/Desktop/ToDo/Automation/DXFAutomation/Scripts/Splines/Text.dxf")
+doc = ezdxf.readfile("C:/Users/mbuechel/Desktop/ToDo/Automation/DXFAutomation/Scripts/Splines/modified_GD1_ELE_RUB_Ausführung GD1 7.OG 50__GEOREF.dxf")
 
 # Convert all splines to lines
 convert_splines_to_lines(doc)
 
 # Save the modified DXF document
-doc.saveas("C:/Users/mbuechel/Desktop/ToDo/Automation/DXFAutomation/Scripts/Splines/converted_dxf_file.dxf")
+doc.saveas("C:/Users/mbuechel/Desktop/ToDo/Automation/DXFAutomation/Scripts/Splines/converted_modified_GD1_ELE_RUB_Ausführung GD1 7.OG 50__GEOREF.dxf")

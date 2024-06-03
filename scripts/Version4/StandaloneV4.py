@@ -9,6 +9,7 @@ import time
 from explode_blocks import explode_blocks
 from explode_dimensions import explode_dimensions
 from explode_mtext import explode_mtext
+from splines_2_lines import splines_2_lines
 from create_hatch_boundaries import create_hatch_boundary_for_all_hatches
 from text_2_lines import extract_text_and_positions, text_to_boundary_lines, polylines_to_lines
 from delete_entities import delete_hatch_entities, delete_point_entities, delete_text_entities, delete_mtext_entities, delete_body_entities, delete_image_entities, delete_wipeout_entities, delete_solid_entities, delete_3dsolid_entities
@@ -33,14 +34,14 @@ def is_within_bounds(entity, min_x, min_y, max_x, max_y):
 
 # Return entities that are within boundary
 def find_entities_within_bounds(dxf_path, min_x, min_y, max_x, max_y):
-    """Find all entities within the given bounds in a DXF file."""
+    # Find all entities within the given bounds in a DXF file.
     doc = ezdxf.readfile(dxf_path)
     msp = doc.modelspace()
     return [entity for entity in msp if is_within_bounds(entity, min_x, min_y, max_x, max_y)]
 
 # Perform the actual check
 def is_georeferenced(dxf_path, min_x, min_y, max_x, max_y):
-    """Check if the DXF file is georeferenced by finding entities within bounds."""
+    # Check if the DXF file is georeferenced by finding entities within bounds.
     entities = find_entities_within_bounds(dxf_path, min_x, min_y, max_x, max_y)
     return len(entities) > 0
 
@@ -150,7 +151,7 @@ def process_dxf(input_file, output_file, log_file_path):
     except Exception as e:
         log_operation("text_to_boundary_lines", False, log_file_path, str(e))
         raise e
-    
+
     # Convert polylines to lines within the same document
     try:
         polylines_to_lines(doc)
@@ -158,7 +159,15 @@ def process_dxf(input_file, output_file, log_file_path):
     except Exception as e:
         log_operation("polylines_to_lines", False, log_file_path, str(e))
         raise e
-    
+
+    # Convert splines to lines via polylines within the same document
+    try:
+        splines_2_lines(doc)
+        log_operation("Splines have been converted to lines", True, log_file_path)
+    except Exception as e:
+        log_operation("splines_2_polylines", False, log_file_path, str(e))
+        raise e
+
     # Create boundary lines for all hatches
     try:
         create_hatch_boundary_for_all_hatches(doc)

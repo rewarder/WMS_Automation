@@ -7,7 +7,7 @@ Created on Mon Jan  8 11:36:14 2024
 import ezdxf
 
 # Load the DXF file
-doc = ezdxf.readfile('input.dxf')
+doc = ezdxf.readfile('C:/Users/mbuechel/Desktop/ToDo/Automation/DXFAutomation/Scripts/Blocks/ExplodingBlocks/another.dxf')
 
 # Get the modelspace of the drawing
 msp = doc.modelspace()
@@ -20,4 +20,4 @@ for block in blocks:
     msp.explode(block, True)
 
 # Save the DXF file
-doc.saveas('Exploded.dxf')
+doc.saveas('C:/Users/mbuechel/Desktop/ToDo/Automation/DXFAutomation/Scripts/Blocks/ExplodingBlocks/another_exploded.dxf')

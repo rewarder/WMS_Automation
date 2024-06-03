@@ -1,49 +1,41 @@
 import ezdxf
-from ezdxf.math import Matrix44
-import math
+from ezdxf.entities import Insert
 
 def explode_blocks(input_file, output_file):
     doc = ezdxf.readfile(input_file)
-    modelspace = doc.modelspace()
+    msp = doc.modelspace()
 
-    def explode_block_reference(block_ref, modelspace):
-        block_definition = block_ref.block()
-        m = Matrix44.chain(
-            Matrix44.translate(block_ref.dxf.insert.x, block_ref.dxf.insert.y, block_ref.dxf.insert.z),
-            Matrix44.z_rotate(math.radians(block_ref.dxf.rotation)),
-            Matrix44.scale(block_ref.dxf.xscale, block_ref.dxf.yscale, block_ref.dxf.zscale)
-        )
-        # Copy entities from the block definition and add them to the modelspace
-        for entity in block_definition:
-            # Don't process entities on frozen or off layers
-            if entity.dxf.layer in modelspace.doc.layers and modelspace.doc.layers.get(entity.dxf.layer).is_frozen():
-                continue
-            if entity.dxf.layer in modelspace.doc.layers and not modelspace.doc.layers.get(entity.dxf.layer).is_on():
-                continue
-            
-            # Transofrm and add the entity to the modelspace
-            copied_entity = entity.copy()
-            if 'AcDbEntity' in copied_entity.dxftype():
-                copied_entity.transform(m)
+    def explode_block_references(msp, block_ref):
+        # Get the block definition associated with the block reference
+        block_name = block_ref.dxf.name
+        block = msp.doc.blocks[block_name]
+        # Transform the entities in the block to match the block reference
+        for entity in block:
+            new_entity = entity.copy()
+            # Apply the transformation matrix of the block reference to the new entity
+            new_entity.transform(block_ref.matrix44())
+            # Inherit attributes from the block reference
+            inherit_attributes(new_entity, block_ref)
+            msp.add_entity(new_entity)
 
-        # Preserve all attributes by copying the dxf attributes directly
-        copied_entity.dxf.layer = entity.dxf.layer
-        copied_entity.dxf.color = entity.dxf.color
-        copied_entity.dxf.linetype = entity.dxf.linetype
-        copied_entity.dxf.lineweight = entity.dxf.lineweight
-        copied_entity.dxf.ltscale = entity.dxf.ltscale
-        copied_entity.dxf.invisible = entity.dxf.invisible
+    def inherit_attributes(entity, block_ref):
+        # Inherit common DXF attributes
+        entity.dxf.layer = block_ref.dxf.layer
+        entity.dxf.color = block_ref.dxf.color
+        entity.dxf.linetype = block_ref.dxf.linetype
+        entity.dxf.lineweight = block_ref.dxf.lineweight
+        entity.dxf.ltscale = block_ref.dxf.ltscale
 
-        # Access modelspace
-        modelspace.add_entity(copied_entity)
+    # List to store block references for later erasing
+    block_refs_to_erase = []
 
-        # Delete the original block reference
-        modelspace.delete_entity(block_ref)
+    # Iterate over all block references in the model space
+    for block_ref in msp.query('INSERT'):
+        explode_block_references(msp, block_ref)
+        block_refs_to_erase.append(block_ref)
 
-    # Explode all block references
-    block_refs = list(modelspace.query('INSERT')) # Use a list to avoid modifying the container during iteration
-    for block_ref in block_refs:
-        explode_block_reference(block_ref, modelspace)
+    # Delete the original block reference
+    for block_ref in block_refs_to_erase:
+        msp.delete_entity(block_ref)
 
-    # Save the modified document and pass it on
     doc.saveas(output_file)

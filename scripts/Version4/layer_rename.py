@@ -1,6 +1,23 @@
-# layer_rename.py
-
 import ezdxf
+import re
+
+def replace_characters_dictionary(text):
+    replacements = {
+        'ä': 'ae',
+        'Ä': 'ae',
+        'ö': 'oe',
+        'Ö': 'oe',
+        'ü': 'ue',
+        'Ü': 'ue',
+        '&': '_und_',
+        ' ': '_',
+        '.': '_'
+    }
+    
+    for char, replacement in replacements.items():
+        text = text.replace(char, replacement)
+    
+    return text
 
 def rename_layers(doc):
     
@@ -12,7 +29,8 @@ def rename_layers(doc):
     
     for layer in layer_table:
         old_name = layer.dxf.name
-        new_name = old_name.lower().replace(' ', '_')
+        new_name = replace_characters_dictionary(old_name.lower())
+        # new_name = re.sub(r'[^a-zA-Z0-9]+', '_', old_name.lower())
         layer_name_mapping[old_name] = new_name
     
     # Now rename the layers
