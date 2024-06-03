@@ -67,7 +67,8 @@ def log_operation(operation_name, status, log_file_path, error_msg=None, extra_i
 Main function to process the dxf input file 
 The function accepts/reads an input file in .dxf file format and executes the following operations: 
 - Check if the the input file is georeference or not, if georeferenced proceed, if not abort
-- Bursting blocks 5 times in a row by copying all entities within a block and adding them to the map space 
+- Explode Dimensions
+- Explode Blocks 
 - Extract text, positions, heights, and rotations
 - Convert text to boundary lines within the same drawing
 - Convert polylines to lines within the same document
