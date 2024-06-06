@@ -17,8 +17,9 @@ from polyline_3d_2_lines import convert_3d_polylines_to_lines
 from face3d_boundary_lines import create_face3d_boundary_lines
 from delete_entities import delete_insert_entities, delete_leader_entities, delete_face3D_entities, delete_mpolygon_entities, delete_polyline_entities, delete_hatch_entities, delete_point_entities, delete_text_entities, delete_mtext_entities, delete_body_entities, delete_image_entities, delete_wipeout_entities, delete_solid_entities, delete_3dsolid_entities
 from entity_counter import count_entities
-from layer_rename import rename_layers
+from layer_rename import rename_layers_in_memory
 from georef_outside_ch_entity_delete import delete_entities_outside_boundary
+from delete_layers_set_to_off import delete_layers_set_to_off
 
 """# Check if entities are within bounding box (approximately Switzerland)
 def is_within_bounds(entity, min_x, min_y, max_x, max_y):
@@ -67,8 +68,7 @@ def log_operation(operation_name, status, log_file_path, error_msg=None, extra_i
 Main function to process the dxf input file 
 The function accepts/reads an input file in .dxf file format and executes the following operations: 
 - Check if the the input file is georeference or not, if georeferenced proceed, if not abort
-- Explode Dimensions
-- Explode Blocks 
+- Bursting blocks 5 times in a row by copying all entities within a block and adding them to the map space 
 - Extract text, positions, heights, and rotations
 - Convert text to boundary lines within the same drawing
 - Convert polylines to lines within the same document
@@ -157,6 +157,14 @@ def process_dxf(input_file, output_file, log_file_path):
         log_operation("text_to_boundary_lines", False, log_file_path, str(e))
         raise e
 
+    # Delete layers that were turned off
+    # try:
+    #     doc = delete_layers_set_to_off(doc)
+    #     log_operation("Layers that were turned off have been deleted", True, log_file_path)
+    # except Exception as e:
+    #     log_operation("delete_layers_set_to_off", False, log_file_path, str(e))
+    #     raise e
+
     # Convert polylines to lines within the same document
     try:
         polylines_to_lines(doc)
@@ -203,6 +211,15 @@ def process_dxf(input_file, output_file, log_file_path):
         log_operation("3DFace boundary lines have been created", True, log_file_path)
     except Exception as e:
         log_operation("create_face3d_boundary_lines", False, log_file_path, str(e))
+        raise e
+
+    # Rename layers
+    try: 
+        # Call the rename layers function
+        rename_layers_in_memory(doc) # Rename layers according to WMS naming convention
+        log_operation("Layers have been renamed according to WMS naming convention", True, log_file_path)
+    except Exception as e:
+        log_operation("Something went wrong while renaming layers", False, log_file_path, str(e))
         raise e
 
     # Delete all insert entities
@@ -323,15 +340,6 @@ def process_dxf(input_file, output_file, log_file_path):
         log_operation("3DSolid entities have been deleted", True, log_file_path)
     except Exception as e:
         log_operation("delete_3dsolid_entities", False, log_file_path, str(e))
-        raise e
-
-    # Rename layers
-    try: 
-        # Call the rename layers function
-        rename_layers(doc) # Rename layers according to WMS naming convention
-        log_operation("Layers have been renamed according to WMS naming convention", True, log_file_path)
-    except Exception as e:
-        log_operation("Something went wrong while renaming layers", False, log_file_path, str(e))
         raise e
 
     # Save the current state to a file and then re-open it for explode_blocks

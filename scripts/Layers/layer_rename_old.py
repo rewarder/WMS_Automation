@@ -9,7 +9,10 @@ def replace_umlauts(text):
         text = text.replace(umlaut, replacement)
     return text
 
-def rename_layers_in_memory(doc):
+def rename_layers(dxf_file_path):
+    # Load the DXF document
+    doc = ezdxf.readfile(dxf_file_path)
+    
     # Get the layer table
     layer_table = doc.layers
     
@@ -32,5 +35,9 @@ def rename_layers_in_memory(doc):
             # Update all entities to use the new layer name
             for entity in doc.modelspace().query(f'*[layer=="{old_name}"]'):
                 entity.dxf.layer = new_name
-                
-    return doc
+    
+    # Save the modified DXF document
+    doc.saveas(dxf_file_path)
+
+# Example usage
+rename_layers('C:/Users/mbuechel/Desktop/ToDo/Automation/WMS_Automation/scripts/Layers/splines_test.dxf')

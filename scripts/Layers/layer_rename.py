@@ -1,8 +1,17 @@
 import ezdxf
 
-def rename_layers(dxf_file_path):
+def replace_umlauts(text):
+    umlaut_mapping = {
+        'Ä': 'Ae', 'Ö': 'Oe', 'Ü': 'Ue',
+        'ä': 'ae', 'ö': 'oe', 'ü': 'ue'
+    }
+    for umlaut, replacement in umlaut_mapping.items():
+        text = text.replace(umlaut, replacement)
+    return text
+
+def rename_layers(input_dxf_file_path, output_dxf_file_path):
     # Load the DXF document
-    doc = ezdxf.readfile(dxf_file_path)
+    doc = ezdxf.readfile(input_dxf_file_path)
     
     # Get the layer table
     layer_table = doc.layers
@@ -13,6 +22,7 @@ def rename_layers(dxf_file_path):
     for layer in layer_table:
         old_name = layer.dxf.name
         new_name = old_name.lower().replace(' ', '_')
+        new_name = replace_umlauts(new_name)  # Replace German umlauts
         layer_name_mapping[old_name] = new_name
     
     # Now rename the layers
@@ -26,8 +36,14 @@ def rename_layers(dxf_file_path):
             for entity in doc.modelspace().query(f'*[layer=="{old_name}"]'):
                 entity.dxf.layer = new_name
     
-    # Save the modified DXF document
-    doc.saveas(dxf_file_path)
+    # Save the modified document to the output file path
+    doc.saveas(output_dxf_file_path)
 
-# Example usage
-rename_layers('C:/Users/mbuechel/Desktop/ToDo/Automation/DXFAutomation/Scripts/Layers/Test-input_GEOREF.dxf')
+if __name__ == "__main__":
+    import sys
+    if len(sys.argv) != 3:
+        print("Usage: python script.py <input.dxf> <output.dxf>")
+    else:
+        input_dxf_file_path = sys.argv[1]
+        output_dxf_file_path = sys.argv[2]
+        rename_layers(input_dxf_file_path, output_dxf_file_path)
