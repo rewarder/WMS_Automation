@@ -1,41 +1,48 @@
 import ezdxf
 
-def print_layers_set_to_off(dxf_file_path):
+def delete_off_layers_and_entities(input_dxf_file_path, output_dxf_file_path):
     # Load the DXF document
-    doc = ezdxf.readfile(dxf_file_path)
+    doc = ezdxf.readfile(input_dxf_file_path)
 
     # Get the layer table
     layer_table = doc.layers
-    layer_names = [layer.dxf.name for layer in layer_table]
+
+    # Print details of each layer for debugging before deletion
+    print("Before deletion:")
+    for layer in layer_table:
+        print(f"Layer: {layer.dxf.name}, On: {layer.is_on()}, Off: {layer.is_off()}, Frozen: {layer.is_frozen()}, Locked: {layer.is_locked()}")
+
+    # List to keep track of layers to be deleted
+    layers_to_delete = []
+
+    # Identify layers to be deleted
+    for layer in layer_table:
+        if layer.is_on() == False:  # Explicit check for False
+            layers_to_delete.append(layer.dxf.name)
     
-    if layer_names:
-        print("There actually are some layers")
-        for layer_name in layer_names:
-            print(layer_name)
-    else:
-        print("There are no layers")
+    # Collect all entities that are on the layers to be deleted
+    entities_to_delete = []
+    for entity in doc.modelspace().query('*'):  # Query all entities in the modelspace
+        if entity.dxf.layer in layers_to_delete:
+            entities_to_delete.append(entity)
 
+    # Delete the identified entities
+    for entity in entities_to_delete:
+        doc.modelspace().delete_entity(entity)
+    
+    # Delete the identified layers
+    for layer_name in layers_to_delete:
+        layer_table.remove(layer_name)
+    
+    # Save the modified document to a different output file
+    doc.saveas(output_dxf_file_path)
 
-    # Print the names of layers set to on
-    layers_to_print = [layer.dxf.name for layer in layer_table if layer.dxf.is_on]
-
-    if layers_to_print:
-        print("Layers set to 'is_on':")
-        for layer_name in layers_to_print:
-            print(layer_name)
-    else:
-        print("No layers set to 'is_on' found.")
-
-    # Print the names of layers set to off
-    layers_to_print = [layer.dxf.name for layer in layer_table if layer.dxf.is_off]
-
-    if layers_to_print:
-        print("Layers set to 'is_off':")
-        for layer_name in layers_to_print:
-            print(layer_name)
-    else:
-        print("No layers set to 'is_off' found.")
+    # Print details of each layer for debugging after deletion
+    print("After deletion:")
+    for layer in layer_table:
+        print(f"Layer: {layer.dxf.name}, On: {layer.is_on()}, Off: {layer.is_off()}, Frozen: {layer.is_frozen()}, Locked: {layer.is_locked()}")
 
 # Example usage
 input_dxf_file_path = 'C:/Users/mbuechel/Desktop/ToDo/Automation/WMS_Automation/scripts/Layers/input-test.dxf'
-print_layers_set_to_off(input_dxf_file_path)
+output_dxf_file_path = 'C:/Users/mbuechel/Desktop/ToDo/Automation/WMS_Automation/scripts/Layers/input-test-mod.dxf'
+delete_off_layers_and_entities(input_dxf_file_path, output_dxf_file_path)

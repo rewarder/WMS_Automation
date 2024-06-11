@@ -17,7 +17,7 @@ def delete_off_layers_and_entities(input_dxf_file_path, output_dxf_file_path):
 
     # Identify layers to be deleted
     for layer in layer_table:
-        if layer.is_on() == False:  # Explicit check for False
+        if not layer.is_on():  # Simplified check for False
             layers_to_delete.append(layer.dxf.name)
     
     # Collect all entities that are on the layers to be deleted
@@ -41,8 +41,3 @@ def delete_off_layers_and_entities(input_dxf_file_path, output_dxf_file_path):
     print("After deletion:")
     for layer in layer_table:
         print(f"Layer: {layer.dxf.name}, On: {layer.is_on()}, Off: {layer.is_off()}, Frozen: {layer.is_frozen()}, Locked: {layer.is_locked()}")
-
-# Example usage
-input_dxf_file_path = 'C:/Users/mbuechel/Desktop/ToDo/Automation/WMS_Automation/scripts/Layers/input-test.dxf'
-output_dxf_file_path = 'C:/Users/mbuechel/Desktop/ToDo/Automation/WMS_Automation/scripts/Layers/input-test-mod.dxf'
-delete_off_layers_and_entities(input_dxf_file_path, output_dxf_file_path)
