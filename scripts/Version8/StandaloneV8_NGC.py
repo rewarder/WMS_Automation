@@ -15,11 +15,12 @@ from text_2_lines import extract_text_and_positions, text_to_boundary_lines, pol
 from polyline_2d_2_lines import convert_2d_polylines_to_lines
 from polyline_3d_2_lines import convert_3d_polylines_to_lines
 from face3d_boundary_lines import create_face3d_boundary_lines
-from delete_entities import delete_insert_entities, delete_leader_entities, delete_face3D_entities, delete_mpolygon_entities, delete_polyline_entities, delete_hatch_entities, delete_point_entities, delete_text_entities, delete_mtext_entities, delete_body_entities, delete_image_entities, delete_wipeout_entities, delete_solid_entities, delete_3dsolid_entities
+from delete_entities import delete_leader_entities, delete_face3D_entities, delete_mpolygon_entities, delete_polyline_entities, delete_hatch_entities, delete_point_entities, delete_text_entities, delete_mtext_entities, delete_body_entities, delete_image_entities, delete_wipeout_entities, delete_solid_entities, delete_3dsolid_entities
 from entity_counter import count_entities
 from layer_rename import rename_layers_in_memory
 from georef_outside_ch_entity_delete import delete_entities_outside_boundary
 from delete_layers_set_to_off import delete_off_layers_and_entities
+from flatten_lines import flatten3d_lines
 
 """# Check if entities are within bounding box (approximately Switzerland)
 def is_within_bounds(entity, min_x, min_y, max_x, max_y):
@@ -83,8 +84,6 @@ The function accepts/reads an input file in .dxf file format and executes the fo
 - Delete all wipeout entities
 - Delete all solid entities
 - Delete all 3Dsolid entities
-- Save the current state to a file and then re-open it for explode_blocks
-- Explode blocks one last time
 - Cleanup intermediate files created during the previous operations
 - Count all entities
 """
@@ -337,6 +336,14 @@ def process_dxf(input_file, output_file, log_file_path):
         log_operation("3DSolid entities have been deleted", True, log_file_path)
     except Exception as e:
         log_operation("delete_3dsolid_entities", False, log_file_path, str(e))
+        raise e
+
+    # Step 28: Flatten all lines
+    try:
+        flatten3d_lines(doc)
+        log_operation("Line entities have been flattened", True, log_file_path)
+    except Exception as e:
+        log_operation("flatten3d_lines", False, log_file_path, str(e))
         raise e
 
     # Step 28: Save the current state to a file and then re-open it for explode_blocks

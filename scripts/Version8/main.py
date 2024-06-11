@@ -84,8 +84,6 @@ The function accepts/reads an input file in .dxf file format and executes the fo
 - Delete all wipeout entities
 - Delete all solid entities
 - Delete all 3Dsolid entities
-- Save the current state to a file and then re-open it for explode_blocks
-- Explode blocks one last time
 - Cleanup intermediate files created during the previous operations
 - Count all entities
 """
