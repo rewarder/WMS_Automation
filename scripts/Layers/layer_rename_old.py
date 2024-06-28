@@ -40,4 +40,4 @@ def rename_layers(dxf_file_path):
     doc.saveas(dxf_file_path)
 
 # Example usage
-rename_layers('C:/Users/mbuechel/Desktop/ToDo/Automation/WMS_Automation/scripts/Layers/splines_test.dxf')
+rename_layers('C:/Users/mbuechel/Desktop/ToDo/Automation/WMS_Automation/scripts/Layers/modified_1981-0210_04  Rückbau best. Brücke Aufhängung Situation_Georef.dxf')

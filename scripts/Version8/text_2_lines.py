@@ -7,6 +7,12 @@ from ezdxf.fonts import fonts
 from ezdxf.math import Matrix44
 from ezdxf import zoom, path
 
+# Set the support directory for DXF fonts
+ezdxf.options.support_dirs = ["C:/Users/mbuechel/Desktop/ToDo/Automation/WMS_Automation/scripts/dxfsupport"]
+
+# Build the system font cache
+fonts.build_system_font_cache()
+
 def extract_text_and_positions(input_file):
     text_content = []
     positions = []
@@ -27,7 +33,7 @@ def extract_text_and_positions(input_file):
 
 def text_to_boundary_lines(text_content, positions, heights, rotations, doc):
     msp = doc.modelspace()
-    font = fonts.FontFace(family="TXT")
+    font = fonts.make_font("isocp.shx", cap_height=0.1)  # Adjust cap height as needed
 
     for text, position, height, rotation in zip(text_content, positions, heights, rotations):
         rotation_radians = math.radians(rotation)
@@ -37,9 +43,11 @@ def text_to_boundary_lines(text_content, positions, heights, rotations, doc):
             Matrix44.translate(position[0], position[1], 0)
         )
 
-        paths = text2path.make_paths_from_str(text, font=font, size=height, m=transform_matrix)
-        for path in paths:
-            polyline = msp.add_lwpolyline(points=path.flattening(0.1), format='xyb')
+        text_path = font.text_path(text)
+        paths = [text_path.to_path().transform(transform_matrix)]
+        
+        for single_path in paths:
+            polyline = msp.add_lwpolyline(points=single_path.flattening(0.1), format='xyb')
 
     return doc
 
@@ -59,3 +67,5 @@ def polylines_to_lines(doc):
 
             line = msp.add_line(start_point, end_point)
             line.dxf.color = color
+
+    return doc

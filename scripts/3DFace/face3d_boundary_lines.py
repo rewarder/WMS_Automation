@@ -21,7 +21,7 @@ def create_boundary_lines(doc):
 
 def main():
     # Hard-coded input file path
-    input_file = 'C:/Users/mbuechel/Desktop/ToDo/Automation/DXFAutomation/Scripts/3DFace/29173.01_901A_Aushub_Export_3DFace.dxf'
+    input_file = 'C:/Users/mbuechel/Desktop/ToDo/Automation/WMS_Automation/scripts/3DFace/1981_Grenzacherstrasse_best_Bruecke.dxf'
     
     # Load the input DXF document
     doc = ezdxf.readfile(input_file)
