@@ -1,4 +1,5 @@
 import ezdxf
+import re
 
 def replace_umlauts(text):
     umlaut_mapping = {
@@ -8,6 +9,10 @@ def replace_umlauts(text):
     for umlaut, replacement in umlaut_mapping.items():
         text = text.replace(umlaut, replacement)
     return text
+
+def remove_leading_numbers(name):
+    # Use regular expression to remove leading numbers
+    return re.sub(r'^\d+', '', name)
 
 def rename_layers(input_dxf_file_path, output_dxf_file_path):
     # Load the DXF document
@@ -22,8 +27,17 @@ def rename_layers(input_dxf_file_path, output_dxf_file_path):
     for layer in layer_table:
         old_name = layer.dxf.name
         new_name = old_name.lower().replace(' ', '_')
+        new_name = new_name.replace('.', '_')
         new_name = replace_umlauts(new_name)  # Replace German umlauts
-        layer_name_mapping[old_name] = new_name
+        new_name = remove_leading_numbers(new_name) # Remove leading numbers
+
+        # Ensure the new name does not conflict with existing layer names
+        if new_name in layer_table:
+            print(f"Conflict detected: {new_name} already exists. Skipping rename for {old_name}.")
+            continue
+        
+        if new_name != old_name:
+            layer_name_mapping[old_name] = new_name
     
     # Now rename the layers
     for old_name, new_name in layer_name_mapping.items():

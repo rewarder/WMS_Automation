@@ -7,7 +7,7 @@ def process_dxf(input_file, output_file):
     doc = ezdxf.readfile(input_file)
     msp = doc.modelspace()
 
-    font = text2path.FontFace(font='simplex.shx')  # Define the font
+    font = fonts.FontFace(font='simplex.shx')  # Define the font
 
     for text_entity in msp.query('TEXT'):
         text_content = text_entity.dxf.text
