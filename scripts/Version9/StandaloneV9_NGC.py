@@ -157,13 +157,13 @@ def process_dxf(input_file, output_file, log_file_path):
     doc = ezdxf.readfile(current_file)
     
     # Step 5: Purge unused elements
-    try: 
+    """try: 
         # Call the purge function
         purge_dxf(doc) # Purge unused elements
         log_operation("Elements have been purged", True, log_file_path)
     except Exception as e:
         log_operation("Something went wrong while purging elements", False, log_file_path, str(e))
-        raise e
+        raise e"""
     
     # Step 6: Convert text to lines based on isocp.shx font
     try:
@@ -359,13 +359,13 @@ def process_dxf(input_file, output_file, log_file_path):
         raise e
     
     # Step 5: Purge unused elements
-    try: 
+    """try: 
         # Call the purge function again
         purge_dxf(doc) # Purge unused elements
         log_operation("Elements have been purged again", True, log_file_path)
     except Exception as e:
         log_operation("Something went wrong while purging elements again", False, log_file_path, str(e))
-        raise e
+        raise e"""
 
     # Step 28: Save the current state to a file and then re-open it for explode_blocks
     doc.saveas(output_file)
