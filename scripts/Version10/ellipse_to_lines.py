@@ -42,9 +42,7 @@ def calculate_ellipse_point(center, major_axis, ratio, t):
     # Translate the point to the ellipse's center
     return center.x + x_rot, center.y + y_rot
 
-def redraw_ellipses(input_file, output_file):
-    # Load the input DXF file
-    doc = ezdxf.readfile(input_file)
+def redraw_ellipses(doc):
     msp = doc.modelspace()
 
     # Create a new DXF document for output
@@ -67,13 +65,4 @@ def redraw_ellipses(input_file, output_file):
         # Approximate the ellipse with lines
         approximate_ellipse_with_lines(new_msp, center, major_axis, ratio, start_param, end_param)
 
-    # Save the new DXF document
-    new_doc.saveas(output_file)
-    print(f"Ellipses approximated with lines and saved to {output_file}")
-
-# Specify the input and output file paths
-input_file = 'input.dxf'
-output_file = 'output.dxf'
-
-# Call the function to redraw ellipses and save to output file
-redraw_ellipses(input_file, output_file)
+    return new_doc
