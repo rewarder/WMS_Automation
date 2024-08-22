@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <title>Leaflet GeoJSON Example</title>
+   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+   <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+</head>
+<body>
+   <div id="map" style="height: 1000px; width: 100%;"></div>
+
+   <script>
+       var map = L.map('map', {
+       preferCanvas: true
+   }).setView([47.350357, 8.71311], 16); // Initial zoom level set to 16
+
+       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+           attribution: '&copy; OpenStreetMap contributors',
+           maxZoom: 30 // Set the maximum zoom level to 30
+       }).addTo(map);
+
+       var geojsonFeature = 
+
+ADD GEOGEJSONE HERE
+ 
+        function onEachFeature(feature, layer) {
+           if (feature.properties && feature.properties.name) {
+               layer.bindPopup(feature.properties.name);
+           }
+       }
+
+       L.geoJSON(geojsonFeature, {
+          style: function(feature) {
+            return {
+                color: feature.properties.color, // Set line color based on the 'color' property
+                weight: 1 // Set line weight to 1 pixels
+            };
+        },
+           onEachFeature: onEachFeature
+       }).addTo(map);
+   </script>
+</body>
+</html>
