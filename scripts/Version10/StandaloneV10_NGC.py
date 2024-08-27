@@ -182,13 +182,7 @@ def process_dxf(input_file, output_file, log_file_path):
         log_operation("polylines_to_lines", False, log_file_path, str(e))
         raise e
 
-    """# Step 8: Convert ellipses to lines within the same document
-    try:
-        approximate_ellipse_with_lines(doc)
-        log_operation("Ellipses have been approximated with", True, log_file_path)
-    except Exception as e:
-        log_operation("approximate_ellipse_with_lines", False, log_file_path, str(e))
-        raise e"""
+    # Step 8: Convert ellipses to lines within the same document
 
     try:
         redraw_ellipses(doc)

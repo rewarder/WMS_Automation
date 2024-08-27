@@ -1,7 +1,7 @@
 import ezdxf
 import math
 
-def approximate_ellipse_with_lines(msp, center, major_axis, ratio, start_param, end_param, dxfattribs, segments=100):
+def approximate_ellipse_with_lines(msp, center, major_axis, ratio, start_param, end_param, dxfattribs, segments=50):
     for i in range(segments):
         t1 = start_param + (end_param - start_param) * i / segments
         t2 = start_param + (end_param - start_param) * (i + 1) / segments

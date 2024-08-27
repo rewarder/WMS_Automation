@@ -9,7 +9,7 @@ from ezdxf.math import Matrix44
 import math
 
 # Hard coded link to the directory that contains the fonts which are to be rendered
-ezdxf.options.support_dirs = ["C:/Users/mbuechel/Desktop/ToDo/Automation/WMS_Automation/scripts/Version9/font"]
+ezdxf.options.support_dirs = ["C:/Users/mbuechel/Desktop/ToDo/Automation/WMS_Automation/scripts/Version10/font"]
 
 # System font cache needs to be rebuilt
 fonts.build_system_font_cache()
@@ -20,8 +20,8 @@ def render_txt(fontname: str, text: str, cap_height: float = 3.5):
     return text_path
 
 def convert_text_in_dxf(doc: Drawing) -> Drawing:
-    fontname = "isocp.shx"
-    kerning = 0.8  # Adjust the kerning factor as needed
+    fontname = "extslim2.shx"
+    kerning = 1.0  # Adjust the kerning factor as needed
 
     msp = doc.modelspace()
 
