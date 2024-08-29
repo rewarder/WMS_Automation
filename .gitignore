@@ -161,3 +161,30 @@ cython_debug/
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
+scripts/geotiff/output.tif
+scripts/geotiff/output12.tif.aux.xml
+scripts/geotiff/output12_16k.tif
+scripts/geotiff/output12_16k.tif.aux.xml
+scripts/geotiff/output12_2k.tif
+scripts/geotiff/output12_2k.tif.aux.xml
+scripts/geotiff/output12_32k.tif
+scripts/geotiff/output12_32k.tif.aux.xml
+scripts/geotiff/output12_32k_deflate.tif
+scripts/geotiff/output12_32k_greyscale_deflate.tif
+scripts/geotiff/output12_32k_greyscale_deflate.tif.aux.xml
+scripts/geotiff/output12_32k_lzw.tif
+scripts/geotiff/output12_32k_lzw.tif.aux.xml
+scripts/geotiff/output12_4k.tif
+scripts/geotiff/output12_4k.tif.aux.xml
+scripts/geotiff/output12_8k.tif
+scripts/geotiff/output12_8k.tif.aux.xml
+scripts/geotiff/raster_matrix.txt
+scripts/InputFiles/DWG/9. OG Haus 104 103 102 101_georef_ACAD_2013.dwg
+scripts/InputFiles/DWG/Test/9. OG Haus 104 103 102 101_georef.dwg
+scripts/InputFiles/DWG/Test/9. OG Haus 104 103 102 101_georef_ACAD_2013.dwg
+scripts/leaflet/leaflet_03.html
+scripts/leaflet/leaflet_04.html
+scripts/leaflet/leaflet_05.html
+scripts/landxml/GEOTIFF_27342.02_901A_Aushub_3dr (1).tiff
+scripts/landxml/GEOTIFF_27342.02_901A_Aushub_3dr (1).tiff.aux.xml
+scripts/landxml/output_02.dwl

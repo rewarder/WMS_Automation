@@ -1,0 +1,41 @@
+20240827_13:27:25 - Georeference Check - The plan is georeferenced.: SUCCESS
+20240827_13:27:28 - Off layers and entities have been deleted - No extra info: SUCCESS
+20240827_13:27:31 - Dimensions have been exploded - No extra info: SUCCESS
+20240827_13:27:34 - Blocks have been exploded - No extra info: SUCCESS
+20240827_13:27:37 - MText has been exploded - No extra info: SUCCESS
+20240827_13:27:40 - Text boundary lines have been created - No extra info: SUCCESS
+20240827_13:27:40 - Polylines have been converted to lines - No extra info: SUCCESS
+20240827_13:27:40 - Ellipses have been redrawn - No extra info: SUCCESS
+20240827_13:27:42 - Splines have been converted to lines - No extra info: SUCCESS
+20240827_13:27:42 - 2D Polylines have been converted to lines - No extra info: SUCCESS
+20240827_13:27:42 - 3D Polylines have been converted to lines - No extra info: SUCCESS
+20240827_13:27:42 - Boundary lines have been created for all hatches - No extra info: SUCCESS
+20240827_13:27:42 - 3DFace boundary lines have been created - No extra info: SUCCESS
+20240827_13:27:42 - Layers have been renamed according to WMS naming convention - No extra info: SUCCESS
+20240827_13:27:44 - Identical lines have been deleted - No extra info: SUCCESS
+20240827_13:27:44 - Leader entities have been deleted - No extra info: SUCCESS
+20240827_13:27:44 - 3DFace entities have been deleted - No extra info: SUCCESS
+20240827_13:27:44 - MPolygon entities have been deleted - No extra info: SUCCESS
+20240827_13:27:44 - Polyline entities have been deleted - No extra info: SUCCESS
+20240827_13:27:44 - Hatch entities have been deleted - No extra info: SUCCESS
+20240827_13:27:44 - Text entities have been deleted - No extra info: SUCCESS
+20240827_13:27:44 - MText entities have been deleted - No extra info: SUCCESS
+20240827_13:27:44 - Point entities have been deleted - No extra info: SUCCESS
+20240827_13:27:44 - Body entities have been deleted - No extra info: SUCCESS
+20240827_13:27:44 - Image entities have been deleted - No extra info: SUCCESS
+20240827_13:27:44 - Wipeout entities have been deleted - No extra info: SUCCESS
+20240827_13:27:44 - Solid entities have been deleted - No extra info: SUCCESS
+20240827_13:27:44 - 3DSolid entities have been deleted - No extra info: SUCCESS
+20240827_13:27:44 - Line entities have been flattened - No extra info: SUCCESS
+20240827_13:27:44 - Elements have been purged again - No extra info: SUCCESS
+20240827_13:27:46 - cleanup C:\Users\mbuechel\Desktop\ToDo\Automation\WMS_Automation\scripts\Testing\V10\intermediate_file1.dxf - No extra info: SUCCESS
+20240827_13:27:46 - cleanup C:\Users\mbuechel\Desktop\ToDo\Automation\WMS_Automation\scripts\Testing\V10\intermediate_file2.dxf - No extra info: SUCCESS
+20240827_13:27:46 - cleanup C:\Users\mbuechel\Desktop\ToDo\Automation\WMS_Automation\scripts\Testing\V10\intermediate_file3.dxf - No extra info: SUCCESS
+20240827_13:27:46 - cleanup C:\Users\mbuechel\Desktop\ToDo\Automation\WMS_Automation\scripts\Testing\V10\intermediate_file4.dxf - No extra info: SUCCESS
+20240827_13:27:46 - cleanup C:\Users\mbuechel\Desktop\ToDo\Automation\WMS_Automation\scripts\Testing\V10\intermediate_file5.dxf - No extra info: SUCCESS
+20240827_13:27:46 - cleanup C:\Users\mbuechel\Desktop\ToDo\Automation\WMS_Automation\scripts\Testing\V10\intermediate_file6.dxf - No extra info: SUCCESS
+20240827_13:27:49 - Entity Count - No extra info: SUCCESS
+20240827_13:27:49 - LINE: 55404 - No extra info: SUCCESS
+20240827_13:27:49 - CIRCLE: 1150 - No extra info: SUCCESS
+20240827_13:27:49 - ARC: 803 - No extra info: SUCCESS
+20240827_13:27:49 - Total Execution Time  - 23.73 seconds: SUCCESS

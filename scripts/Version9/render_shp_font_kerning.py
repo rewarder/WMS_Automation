@@ -20,7 +20,7 @@ def render_txt(fontname: str, text: str, cap_height: float = 3.5):
     return text_path
 
 def convert_text_in_dxf(doc: Drawing) -> Drawing:
-    fontname = "isocp.shx"
+    fontname = "iso.lff"
     kerning = 0.8  # Adjust the kerning factor as needed
 
     msp = doc.modelspace()

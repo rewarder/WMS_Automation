@@ -62,6 +62,11 @@ def delete_mtexts_entities(dxf_file_path, save_to=None):
     save_path = save_to or dxf_file_path
     doc.saveas(save_path)
 
+def delete_insert_entities(dxf_file_path, save_to=None):
+    doc = ezdxf.readfile(dxf_file_path)
+    delete_entities_by_type(doc, 'INSERT')
+    save_path = save_to or dxf_file_path
+    doc.saveas(save_path)
 
 # Example usage:
 # delete_all_body_entities('your_input_file.dxf', 'your_output_file.dxf')

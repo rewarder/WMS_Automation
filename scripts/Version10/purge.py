@@ -3,7 +3,7 @@ import ezdxf
 def purge_dxf(doc):
     try:
         # Remove all layouts except the model space
-        for layout_name in doc.layouts.names():
+        for layout_name in list(doc.layouts.names()):
             if layout_name != 'Model':
                 try:
                     doc.layouts.delete(layout_name)
@@ -19,6 +19,7 @@ def purge_dxf(doc):
             try:
                 if layer_name not in ('0', 'Defpoints'):  # '0' and 'Defpoints' are special layers
                     doc.layers.remove(layer_name)
+                    print(f"Removed layer: {layer_name}")
             except Exception as e:
                 print(f"Error removing layer {layer_name}: {e}")
 
@@ -33,9 +34,6 @@ def purge_dxf(doc):
                 if hasattr(sub_entity.dxf, 'linetype'):
                     used_linetypes.add(sub_entity.dxf.linetype)
 
-        # Include other sections if necessary
-        # Example: Add entities from paper space, etc.
-        
         all_linetypes = {linetype.dxf.name for linetype in doc.linetypes}
         unused_linetypes = all_linetypes - used_linetypes
 
@@ -43,25 +41,40 @@ def purge_dxf(doc):
             try:
                 if linetype_name not in ('ByLayer', 'ByBlock'):  # 'ByLayer' and 'ByBlock' are default linetypes
                     doc.linetypes.remove(linetype_name)
+                    print(f"Removed linetype: {linetype_name}")
             except Exception as e:
                 print(f"Error removing linetype {linetype_name}: {e}")
 
         # Purge unused blocks
-        used_blocks = {block_name for entity in doc.modelspace() if entity.dxftype() == 'INSERT' for block_name in [entity.dxf.name]}
-        
+        used_blocks = {entity.dxf.name for entity in doc.modelspace() if entity.dxftype() == 'INSERT'}
+
         all_blocks = {block.dxf.name for block in doc.blocks}
         unused_blocks = all_blocks - used_blocks
 
         for block_name in unused_blocks:
             try:
-                if block_name not in ('*Model_Space', '*Paper_Space') and any(entity.dxftype() == 'INSERT' and entity.dxf.name == block_name for entity in doc.modelspace()):  # Check if block is referenced by any entities before deleting
-                    doc.blocks.delete_block(block_name)
+                # Check if the block is used in any layout or model space
+                if block_name not in ('*Model_Space', '*Paper_Space'):
+                    references_exist = any(
+                        entity.dxf.name == block_name for entity in doc.modelspace() if entity.dxftype() == 'INSERT'
+                    ) or any(
+                        entity.dxf.name == block_name for layout in doc.layouts for entity in layout
+                    )
+                    if not references_exist:
+                        doc.blocks.delete_block(block_name)
+                        print(f"Removed block: {block_name}")
             except Exception as e:
                 print(f"Error deleting block {block_name}: {e}")
 
-
     except Exception as e:
         print(f"An error occurred during purging: {e}")
+
+    # Save the modified document to ensure it's in a good state
+    try:
+        doc.saveas('output.dxf')  # Change to your desired output file name
+        print("Document saved successfully.")
+    except Exception as e:
+        print(f"Error saving document: {e}")
 
     # return the drawing object for the next function to process it
     return doc

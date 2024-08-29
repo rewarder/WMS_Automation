@@ -17,10 +17,10 @@ from polyline_2d_2_lines import convert_2d_polylines_to_lines
 from polyline_3d_2_lines import convert_3d_polylines_to_lines
 from ellipse_to_lines import redraw_ellipses
 from face3d_boundary_lines import create_face3d_boundary_lines
-from delete_entities import delete_leader_entities, delete_face3D_entities, delete_mpolygon_entities, delete_polyline_entities, delete_hatch_entities, delete_point_entities, delete_text_entities, delete_mtext_entities, delete_body_entities, delete_image_entities, delete_wipeout_entities, delete_solid_entities, delete_3dsolid_entities
+from delete_entities import delete_leader_entities, delete_face3D_entities, delete_mpolygon_entities, delete_polyline_entities, delete_hatch_entities, delete_point_entities, delete_text_entities, delete_mtext_entities, delete_body_entities, delete_image_entities, delete_wipeout_entities, delete_solid_entities, delete_3dsolid_entities, delete_insert_entities
 from delete_identical_lines import find_and_delete_identical_lines
 from entity_counter import count_entities
-from layer_rename import rename_layers_in_memory
+from layer_rename import rename_layers_in_memory, delete_user_coordinate_systems
 from purge import purge_dxf
 from georef_outside_ch_entity_delete import delete_entities_outside_boundary
 from delete_layers_set_to_off import delete_off_layers_and_entities
@@ -230,6 +230,24 @@ def process_dxf(input_file, output_file, log_file_path):
         log_operation("create_face3d_boundary_lines", False, log_file_path, str(e))
         raise e
 
+    # Step 14: Delete User Coordinate System
+    """try: 
+        # Call the rename layers function
+        delete_user_coordinate_systems(doc) # Rename layers according to WMS naming convention
+        log_operation("User Coordinate Systems have been renamed according to WMS naming convention", True, log_file_path)
+    except Exception as e:
+        log_operation("Something went wrong while deleting User Coordinate Systems", False, log_file_path, str(e))
+        raise e"""
+
+    # Step 17: Delete all Insert entities
+    """try:
+        delete_insert_entities(doc)
+        log_operation("Insert entities have been deleted", True, log_file_path)
+    except Exception as e:
+        log_operation("delete_insert_entities", False, log_file_path, str(e))
+        raise e"""
+
+
     # Step 14: Rename layers
     try: 
         # Call the rename layers function
@@ -367,7 +385,7 @@ def process_dxf(input_file, output_file, log_file_path):
         log_operation("flatten3d_lines", False, log_file_path, str(e))
         raise e
     
-    # Step 5: Purge unused elements
+    # Step 31: Purge unused elements
     """try: 
         # Call the purge function again
         purge_dxf(doc) # Purge unused elements
@@ -376,10 +394,10 @@ def process_dxf(input_file, output_file, log_file_path):
         log_operation("Something went wrong while purging elements again", False, log_file_path, str(e))
         raise e"""
 
-    # Step 31: Save the current state to a file and then re-open it for explode_blocks
+    # Step 32: Save the current state to a file and then re-open it for explode_blocks
     doc.saveas(output_file)
 
-    # Step 32: Cleanup intermediate files
+    # Step 33: Cleanup intermediate files
     for file in intermediate_files:
         try:
             if os.path.exists(file):
@@ -389,7 +407,7 @@ def process_dxf(input_file, output_file, log_file_path):
             log_operation(f"cleanup {file}", False, log_file_path, str(e))
             # Handle the error if necessary
 
-    # Step 33: It's time to count all entities
+    # Step 34: It's time to count all entities
     try:
         doc = ezdxf.readfile(output_file)
         entity_count = count_entities(doc)
@@ -406,7 +424,7 @@ def process_dxf(input_file, output_file, log_file_path):
     end_time = time.time() # Record the end time
     total_time = end_time - start_time # Calculate the total time taken
 
-    # Log the total execution time
+    # Step 35: Log the total execution time
     log_operation("Total Execution Time ", True, log_file_path, extra_info=f"{total_time:.2f} seconds")
 
 if __name__ == "__main__":

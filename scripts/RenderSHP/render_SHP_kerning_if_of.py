@@ -74,9 +74,9 @@ def convert_text_in_dxf(input_dxf: str, output_dxf: str, fontname: str, kerning:
     doc.saveas(output_dxf)
 
 # Example usage
-input_dxf = "C:/Users/mbuechel/Desktop/ToDo/Automation/WMS_Automation/scripts/RenderSHP/25303.03_stadtgarten_eg_hls.dxf"
-output_dxf = "C:/Users/mbuechel/Desktop/ToDo/Automation/WMS_Automation/scripts/RenderSHP/of_25303.03_stadtgarten_eg_hls.dxf"
+input_dxf = "C:/Users/mbuechel/Desktop/ToDo/Automation/WMS_Automation/scripts/RenderSHP/umlaute.dxf"
+output_dxf = "C:/Users/mbuechel/Desktop/ToDo/Automation/WMS_Automation/scripts/RenderSHP/of_umlaute_10_isocp.dxf"
 fontname = "isocp.shx"
-kerning = 0.8  # Adjust the kerning factor as needed
+kerning = 1.0  # Adjust the kerning factor as needed
 
 convert_text_in_dxf(input_dxf, output_dxf, fontname, kerning)

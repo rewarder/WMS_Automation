@@ -15,6 +15,7 @@ from render_shp_font_kerning import convert_text_in_dxf
 from polylines_to_lines import polylines_to_lines
 from polyline_2d_2_lines import convert_2d_polylines_to_lines
 from polyline_3d_2_lines import convert_3d_polylines_to_lines
+from ellipse_to_lines import redraw_ellipses
 from face3d_boundary_lines import create_face3d_boundary_lines
 from delete_entities import delete_leader_entities, delete_face3D_entities, delete_mpolygon_entities, delete_polyline_entities, delete_hatch_entities, delete_point_entities, delete_text_entities, delete_mtext_entities, delete_body_entities, delete_image_entities, delete_wipeout_entities, delete_solid_entities, delete_3dsolid_entities
 from delete_identical_lines import find_and_delete_identical_lines
@@ -180,6 +181,14 @@ def process_dxf(input_file, output_file, log_file_path):
     except Exception as e:
         log_operation("polylines_to_lines", False, log_file_path, str(e))
         raise e
+
+    # Step 8: Convert ellipses to lines within the same document
+
+    try:
+        redraw_ellipses(doc)
+        log_operation("Ellipses have been redrawn", True, log_file_path)
+    except Exception as e: 
+        log_operation("redraw_ellipse", False, log_file_path, str(e))
 
     # Step 8: Convert splines to lines via polylines within the same document
     try:
