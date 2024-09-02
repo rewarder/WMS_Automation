@@ -16,6 +16,7 @@ from polylines_to_lines import polylines_to_lines
 from polyline_2d_2_lines import convert_2d_polylines_to_lines
 from polyline_3d_2_lines import convert_3d_polylines_to_lines
 from ellipse_to_lines import redraw_ellipses
+from solid_to_lines import trace_solid_entities
 from face3d_boundary_lines import create_face3d_boundary_lines
 from delete_entities import delete_leader_entities, delete_face3D_entities, delete_mpolygon_entities, delete_polyline_entities, delete_hatch_entities, delete_point_entities, delete_text_entities, delete_mtext_entities, delete_body_entities, delete_image_entities, delete_wipeout_entities, delete_solid_entities, delete_3dsolid_entities, delete_insert_entities
 from delete_identical_lines import find_and_delete_identical_lines
@@ -186,9 +187,17 @@ def process_dxf(input_file, output_file, log_file_path):
 
     try:
         redraw_ellipses(doc)
-        log_operation("Ellipses have been redrawn", True, log_file_path)
+        log_operation("Ellipses have been approximated with lines", True, log_file_path)
     except Exception as e: 
         log_operation("redraw_ellipse", False, log_file_path, str(e))
+
+    # Step 8: Convert solids to lines within the same document
+
+    try:
+        trace_solid_entities(doc)
+        log_operation("Solids have been traced with lines", True, log_file_path)
+    except Exception as e: 
+        log_operation("trace_solid_entities", False, log_file_path, str(e))
 
     # Step 9: Convert splines to lines via polylines within the same document
     try:
