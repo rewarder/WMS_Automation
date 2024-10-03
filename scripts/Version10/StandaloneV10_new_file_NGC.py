@@ -18,7 +18,7 @@ from polyline_3d_2_lines import convert_3d_polylines_to_lines
 from ellipse_to_lines import redraw_ellipses
 from solid_to_lines import trace_solid_entities
 from face3d_boundary_lines import create_face3d_boundary_lines
-from new_drawing import copy_entities_into_new_drawing
+from new_drawing import copy_entities_into_new_drawing, clean_drawing
 from delete_entities import delete_leader_entities, delete_face3D_entities, delete_mpolygon_entities, delete_polyline_entities, delete_hatch_entities, delete_point_entities, delete_text_entities, delete_mtext_entities, delete_body_entities, delete_image_entities, delete_wipeout_entities, delete_solid_entities, delete_3dsolid_entities, delete_insert_entities
 from delete_identical_lines import find_and_delete_identical_lines
 from entity_counter import count_entities
@@ -248,15 +248,24 @@ def process_dxf(input_file, output_file, log_file_path):
     except Exception as e:
         log_operation("Something went wrong while copying entities into new drwaing", False, log_file_path, str(e))
         raise e
+    
+    # Step 14: Clean everything that is not Lines, Cirles and Arcs from the drawing
+    try: 
+        # Call the rename layers function
+        clean_drawing(doc) # Rename layers according to WMS naming convention
+        log_operation("Clean everything that is not Lines, Circles and Arcs from the drawing. ", True, log_file_path)
+    except Exception as e:
+        log_operation("Something went wrong while cleaning everything that is not Lines, Circles and Arcs from the drwaing", False, log_file_path, str(e))
+        raise e
 
     # Step 14: Rename layers
-    try: 
+    """try: 
         # Call the rename layers function
         rename_layers_in_memory(doc) # Rename layers according to WMS naming convention
         log_operation("Layers have been renamed according to WMS naming convention", True, log_file_path)
     except Exception as e:
         log_operation("Something went wrong while renaming layers", False, log_file_path, str(e))
-        raise e
+        raise e"""
 
     """# Step 14: Delete User Coordinate System
     try: 

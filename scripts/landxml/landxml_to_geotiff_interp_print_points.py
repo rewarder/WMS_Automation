@@ -1,5 +1,5 @@
 import xml.etree.ElementTree as ET
-import numpy as np
+import numpy as np  
 import rasterio
 from rasterio.transform import from_origin
 
@@ -14,9 +14,10 @@ def parse_landxml(file_path):
     for surface in root.findall('.//landxml:Surface', namespaces):
         points = []
         for p in surface.findall('.//landxml:P', namespaces):
+            # Split the coordinates and rearrange them to 'y, x, z'
             coords = list(map(float, p.text.split()))
-            points.append(coords)
-        
+            points.append([coords[1], coords[0], coords[2]])  # Switch x and y
+            
         faces = []
         for f in surface.findall('.//landxml:F', namespaces):
             face_indices = list(map(int, f.text.split()))
@@ -42,7 +43,7 @@ def interpolate_triangle(p1, p2, p3, num_points):
                 points.append([x, y, z])
     return points
 
-def create_geotiff(points, output_path, pixel_size=0.14):
+def create_geotiff(points, output_path, pixel_size=0.10):
     points = np.array(points)
     min_x, min_y = points[:, 0].min(), points[:, 1].min()
     max_x, max_y = points[:, 0].max(), points[:, 1].max()
@@ -67,6 +68,7 @@ def create_geotiff(points, output_path, pixel_size=0.14):
         dtype='float32',
         crs='EPSG:2056',
         transform=transform,
+        compress='lzw'
     ) as dst:
         dst.write(elevation_grid, 1)
 
@@ -76,9 +78,9 @@ def save_points_to_txt(points, output_path):
             f.write(f"{point[0]}, {point[1]}, {point[2]}\n")
 
 def main():
-    landxml_file = 'Export_for_TEDAMOS_DGM.xml'  # Replace with your LandXML file path
-    output_tiff_file = 'output_file_02.tif'  # Desired output GeoTIFF file path
-    output_txt_file = 'points_output_02.txt'  # Desired output text file path
+    landxml_file = '1012_Model_Baugrube_wms.xml'  # Replace with your LandXML file path
+    output_tiff_file = '1012_Model_Baugrube_wms.tif'  # Desired output GeoTIFF file path
+    # output_txt_file = 'points_output_02.txt'  # Desired output text file path
 
     surfaces = parse_landxml(landxml_file)
     
@@ -89,7 +91,7 @@ def main():
         for face in faces:
             # Create additional points within the triangle formed by the face
             if len(face) == 3:  # Ensure it's a triangle
-                interpolated_points.extend(interpolate_triangle(face[0], face[1], face[2], num_points=20))
+                interpolated_points.extend(interpolate_triangle(face[0], face[1], face[2], num_points=300))
                 # Add corner points of the triangle to the list
                 interpolated_points.extend(face)  # Adding the original corner points
 
@@ -101,8 +103,8 @@ def main():
         print(f"Surface {i} faces: {faces}")  # Optional: print faces for verification
 
     # Save all combined points to a text file
-    save_points_to_txt(all_combined_points, output_txt_file)
-    print(f"All points saved to {output_txt_file}")
+    # save_points_to_txt(all_combined_points, output_txt_file)
+    # print(f"All points saved to {output_txt_file}")
 
 if __name__ == "__main__":
     main()

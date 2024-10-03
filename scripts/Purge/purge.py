@@ -38,4 +38,4 @@ def purge_dxf(file_path):
     print(f'Purged DXF file saved as: {output_file_path}')
 
 # Example usage
-purge_dxf('C:/Users/mbuechel/Desktop/ToDo/Automation/WMS_Automation/scripts/Purge/input.dxf')
+purge_dxf('intermediate_file4.dxf')

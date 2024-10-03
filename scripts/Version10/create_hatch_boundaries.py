@@ -1,57 +1,55 @@
 import ezdxf
 import math
 
-def create_hatch_boundary_for_all_hatches(doc):
-    try:
-        doc = ezdxf.readfile(doc)
-        msp = doc.modelspace()
+def list_hatch_boundary_points(doc):
+    # Create a dictionary to store boundary points and attributes for each hatch
+    hatch_boundaries = {}
 
-        for hatch in msp.query('HATCH'):
-            boundary_points = []
+    # Iterate through all entities in the model space
+    for entity in doc.modelspace().query('HATCH'):
+        hatch_id = str(entity.dxf.handle)  # Unique identifier for the hatch
+        points = []
+        attributes = {
+            'color': entity.dxf.color,
+            'layer': entity.dxf.layer,
+            'linetype': entity.dxf.linetype,
+        }
 
-            for path in hatch.paths:
-                if isinstance(path, ezdxf.entities.PolylinePath):
-                    # Handle the PolylinePath by iterating through its vertices
-                    for vertex in path.vertices:
-                        boundary_points.append((vertex[0], vertex[1]))
-                    if not path.is_closed:
-                        boundary_points.append(boundary_points[0])  # Close the polyline if it's not closed
-                else:
-                    # Handle other path types that have edges
-                    for edge in path.edges:
-                        if edge.EDGE_TYPE == 'LineEdge':
-                            boundary_points.append(edge.start)
-                            # For the last edge, also include the endpoint
-                            if edge is path.edges[-1]:
-                                boundary_points.append(edge.end)
-                        elif edge.EDGE_TYPE == 'ArcEdge':
-                            # Approximate arc with polyline vertices
-                            center = edge.center
-                            radius = edge.radius
-                            start_angle = edge.start_angle
-                            end_angle = edge.end_angle
-                            is_counter_clockwise = edge.ccw
-                            num_segments = max(2, int(radius * abs(end_angle - start_angle) / 10))  # Adjust num_segments as needed
-                            angle_step = (end_angle - start_angle) / num_segments
-                            if not is_counter_clockwise:
-                                angle_step = -angle_step
-                            for i in range(num_segments + 1):
-                                angle = start_angle + i * angle_step
-                                angle_rad = math.radians(angle)
-                                point = ezdxf.math.Vec2(radius * math.cos(angle_rad) + center.x,
-                                                        radius * math.sin(angle_rad) + center.y)
-                                boundary_points.append(point)
+        # Get the boundary paths of the hatch
+        for boundary in entity.paths:
+            if isinstance(boundary, ezdxf.entities.PolylinePath):
+                # For polyline boundaries, extract points
+                points.extend(boundary.vertices)
+            elif isinstance(boundary, ezdxf.entities.CirclePath):
+                # Handle circular boundaries
+                center = boundary.center
+                radius = boundary.radius
+                # Approximate circle with a set of points
+                circle_points = [
+                    (center[0] + radius * math.cos(theta), center[1] + radius * math.sin(theta))
+                    for theta in [i * (2 * math.pi / 100) for i in range(100)]
+                ]
+                points.extend(circle_points)
 
-            if boundary_points:
-                # Ensure the polyline is closed by repeating the first point at the end
-                if boundary_points[0] != boundary_points[-1]:
-                    boundary_points.append(boundary_points[0])
-                boundary = msp.add_lwpolyline(boundary_points)
-                boundary.dxf.layer = "Hatch_Boundaries"
-                boundary.dxf.color = 7
+        # Store the points and attributes for this hatch
+        hatch_boundaries[hatch_id] = (points, attributes)
 
-        doc.saveas(doc)
+    return hatch_boundaries, doc
 
-    except Exception as e:
-        print(f"Error processing file: {doc}")
-        print(f"Error message: {e}")
+def save_hatch_boundaries_to_dxf(hatch_boundaries, doc):
+    # Add a new modelspace if needed
+    msp = doc.modelspace()
+
+    for hatch_id, (points, attributes) in hatch_boundaries.items():
+        # Create lines connecting the points
+        for i in range(len(points)):
+            start_point = points[i]
+            end_point = points[(i + 1) % len(points)]  # Connect last point to the first
+            
+            # Create a line with the attributes from the hatch
+            line = msp.add_line(start_point, end_point)
+            line.dxf.color = attributes['color']
+            line.dxf.layer = attributes['layer']
+            line.dxf.linetype = attributes['linetype']
+
+    return doc

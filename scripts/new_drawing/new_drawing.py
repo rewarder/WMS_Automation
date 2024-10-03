@@ -12,8 +12,8 @@ def copy_entities_into_new_drawing(doc):
             # Copy the entity to the new document with its properties
             new_entity = new_model_space.add_entity(entity)
             # Copy properties from the original entity to the new entity
-            for attr in entity.attribs:
-                setattr(new_entity, attr, getattr(entity, attr))
+            #for attr in entity.attribs:
+            #    setattr(new_entity, attr, getattr(entity, attr))
 
     # Return the modified document
     return doc
