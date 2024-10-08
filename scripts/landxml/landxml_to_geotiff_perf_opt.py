@@ -45,7 +45,7 @@ def interpolate_triangle(p1, p2, p3, num_points):
 
     return np.column_stack((x[inside], y[inside], z[inside]))
 
-def create_geotiff(points, output_path, pixel_size=0.10):
+def create_geotiff(points, output_path, pixel_size=0.07):
     points = np.array(points)
     points = points[~np.isnan(points).any(axis=1)]
 
@@ -140,18 +140,36 @@ def find_flatest_triangle_and_smallest_angle(faces, points):
 
     return flattest_triangle, smallest_angle_info, largest_triangle_info
 
-def determine_num_points(file_size_kb, length_x, length_y, smallest_angle):
-    # Base num_points on file size and adjust with area and smallest angle
-    base_points = file_size_kb // 50  # Start with a base derived from file size
-    area_factor = (length_x * length_y) / 10000  # Scale the area
-    angle_factor = max(0.1, 1 / (smallest_angle + 1e-5))  # Avoid division by zero
-    
-    # Calculate num_points
-    num_points = int(base_points * area_factor * angle_factor)
-    # Ensure a minimum number of points
-    return max(150, min(num_points, 1000))
+def determine_num_points(largest_triangle_area):
+    # Base num_points primarily on the largest triangle area
+    # base_points = file_size_kb // 50  # Start with a base derived from file size
+    area_factor = largest_triangle_area / 3 # Scale based on largest triangle area
 
-def process_surface(surface, idx, output_tiff_file, file_size_kb, length_x, length_y, smallest_angle):
+    # Calculate num_points
+    num_points = int(area_factor)
+    
+    # Ensure a minimum and maximum number of points
+    return max(100, min(num_points, 1000))
+
+def split_large_triangle(p1, p2, p3):
+    # Calculate the midpoint of the longest edge
+    a, b, c = np.array(p1), np.array(p2), np.array(p3)
+    edges = [(a, b), (b, c), (c, a)]
+    edge_lengths = [np.linalg.norm(edge[0] - edge[1]) for edge in edges]
+    longest_edge_index = np.argmax(edge_lengths)
+    longest_edge = edges[longest_edge_index]
+
+    midpoint = (longest_edge[0] + longest_edge[1]) / 2
+
+    # Create two new triangles from the midpoint
+    if longest_edge_index == 0:
+        return [(a, midpoint, c), (b, midpoint, c)]
+    elif longest_edge_index == 1:
+        return [(b, midpoint, a), (c, midpoint, a)]
+    else:
+        return [(c, midpoint, b), (a, midpoint, b)]
+
+def process_surface(surface, idx, output_tiff_file):
     points, faces = surface
 
     if not points or not faces:
@@ -162,11 +180,9 @@ def process_surface(surface, idx, output_tiff_file, file_size_kb, length_x, leng
 
     interpolated_points = []
 
-    # Find the flattest triangle, the triangle with the smallest angle, and the largest triangle in the current surface
     flattest_triangle, smallest_angle_triangle, largest_triangle = find_flatest_triangle_and_smallest_angle(faces, points)
-
-    # Determine num_points based on file characteristics
-    num_points = determine_num_points(file_size_kb, length_x, length_y, smallest_angle)
+    largest_triangle_area = largest_triangle[1] if largest_triangle else 0
+    num_points = determine_num_points(largest_triangle_area)
 
     if flattest_triangle:
         flatness_score, face = flattest_triangle
@@ -181,9 +197,20 @@ def process_surface(surface, idx, output_tiff_file, file_size_kb, length_x, leng
         print(f"Surface {idx}: Largest triangle - Vertices: {face}, Area: {area:.6f}")
 
     for face in faces:
-        if len(face) == 3:
-            interpolated_points.extend(interpolate_triangle(face[0], face[1], face[2], num_points))
-            interpolated_points.extend(face)
+        triangles_to_process = [face]
+        
+        while triangles_to_process:
+            current_triangle = triangles_to_process.pop()
+            if len(current_triangle) == 3:
+                area = calculate_triangle_area(*current_triangle)
+                if area > 1:
+                    # Split the triangle and add new triangles to the list to process
+                    new_triangles = split_large_triangle(*current_triangle)
+                    triangles_to_process.extend(new_triangles)
+                else:
+                    # If the triangle is small enough, interpolate and add points
+                    interpolated_points.extend(interpolate_triangle(*current_triangle, num_points))
+                    interpolated_points.extend(current_triangle)
 
     all_points = points + interpolated_points
     create_geotiff(all_points, f"{output_tiff_file[:-4]}_surface_{idx}.tif")
@@ -193,9 +220,9 @@ def main():
 
     # Example values for the files being processed
     test_files = [
-        {'file': 'blubb_for_testing.xml', 'size_kb': 93, 'length_x': 64.38, 'length_y': 34.64, 'smallest_angle': 0.000189},
-        {'file': 'Export_for_TEDAMOS_DGM_for_testing.xml', 'size_kb': 146, 'length_x': 179.3, 'length_y': 336.88, 'smallest_angle': 0.1173},
-        {'file': '1012_Model_Baugrube_wms_for_testing.xml', 'size_kb': 505, 'length_x': 148.59, 'length_y': 219.58, 'smallest_angle': 0.000173}
+        # {'file': 'blubb_for_testing.xml'},
+        # {'file': 'Export_for_TEDAMOS_DGM_for_testing.xml'},
+        {'file': '1012_Model_Baugrube_wms_for_testing.xml'}
     ]
 
     for test_file in test_files:
@@ -207,7 +234,7 @@ def main():
         with ProcessPoolExecutor() as executor:
             futures = []
             for i, surface in enumerate(surfaces, start=1):
-                futures.append(executor.submit(process_surface, surface, i, output_tiff_file, test_file['size_kb'], test_file['length_x'], test_file['length_y'], test_file['smallest_angle']))
+                futures.append(executor.submit(process_surface, surface, i, output_tiff_file))
             
             # Retrieve results to ensure tasks are completed and capture any exceptions
             for future in tqdm(futures, desc="Processing surfaces"):
