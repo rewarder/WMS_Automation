@@ -4,6 +4,7 @@ import sys
 import shutil
 import datetime
 import time
+import argparse
 from concurrent.futures import ThreadPoolExecutor
 
 # Import all the required functions
@@ -538,19 +539,21 @@ def process_file(file_path):
         log_operation("Script Execution", False, log_file_path, str(e))
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Usage: drag and drop a DXF file onto this script.")
-        sys.exit(1)
-    
-    # Files can be processed by dragging the input file onto the an exe, which is compiled using pyinstaller --onefile --windowed
-    input_file_path = sys.argv[1]
+    parser = argparse.ArgumentParser(description='Process a DXF file.')
+    parser.add_argument('input_file', type=str, help='The path to the DXF file to be processed.')
+    parser.add_argument('--output_dir', type=str, default=None, help='The directory to save the processed DXF file.')
+
+    args = parser.parse_args()
+
+    input_file_path = args.input_file
     input_dir, input_filename = os.path.split(input_file_path)
+    output_dir = args.output_dir if args.output_dir else input_dir
     output_file_name = f"modified_{input_filename}"
-    output_file_path = os.path.join(input_dir, output_file_name)
+    output_file_path = os.path.join(output_dir, output_file_name)
 
     # Define log file path
     log_file_name = f"log_{input_filename.replace('.dxf', '')}.txt"
-    log_file_path = os.path.join(input_dir, log_file_name)
+    log_file_path = os.path.join(output_dir, log_file_name)
 
     try:
         process_dxf(input_file_path, output_file_path, log_file_path)
