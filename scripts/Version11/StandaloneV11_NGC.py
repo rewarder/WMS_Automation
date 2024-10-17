@@ -28,7 +28,6 @@ from entity_counter import count_entities
 from rename_layer import rename_layers_in_memory #, delete_user_coordinate_systems
 from purge import purge_dxf
 from georef_outside_ch_entity_delete import delete_entities_outside_boundary
-# from delete_layers_set_to_off import delete_off_layers_and_entities
 from delete_layers_set_to_off_in_mem import delete_off_layers_and_entities
 from flatten_lines import flatten3d_lines
 from remove_insert_entities import remove_all_block_references
@@ -195,23 +194,14 @@ def process_dxf(input_file, output_file, log_file_path):
 
     # Load the intermediate file
     doc = ezdxf.readfile(current_file)
-    
-    # Step 5: Purge unused elements
-    """try: 
-        # Call the purge function
-        purge_dxf(doc) # Purge unused elements
-        log_operation("Elements have been purged", True, log_file_path)
-    except Exception as e:
-        log_operation("Something went wrong while purging elements", False, log_file_path, str(e))
-        raise e"""
 
     # Step XX: Delete all entities outside CH boundary box
-    """try:
+    try:
         delete_entities_outside_boundary(doc)
         log_operation("Entities outside CH have been deleted", True, log_file_path)
     except Exception as e:
         log_operation("delete_entities_outside_boundary", False, log_file_path, str(e))
-        raise e"""
+        raise e
 
 	# Step 18: Delete Dimension Styles
     try: 
@@ -223,13 +213,31 @@ def process_dxf(input_file, output_file, log_file_path):
         raise e
 
 	# Step 19: Delete Block Definitions
-    """try:
+    try:
         # Call the delete all bock definitions function 
         delete_all_block_definitions(doc)
         log_operation("All block definitions have been deleted", True, log_file_path)
     except Exception as e:
         log_operation("delete_all_block_definitions", False, log_file_path, str(e))
-        raise e"""
+        raise e
+
+    # Step 5: Purge unused elements
+    try: 
+        # Call the purge function
+        purge_dxf(doc) # Purge unused elements
+        log_operation("Elements have been purged", True, log_file_path)
+    except Exception as e:
+        log_operation("Something went wrong while purging elements", False, log_file_path, str(e))
+        raise e
+
+	# Step 19: Delete Block Definitions
+    try:
+        # Call the delete all bock definitions function 
+        delete_all_block_definitions(doc)
+        log_operation("All block definitions have been deleted", True, log_file_path)
+    except Exception as e:
+        log_operation("delete_all_block_definitions", False, log_file_path, str(e))
+        raise e
 
 	# Step 5: Convert Text to Lines based on isocp.shx font
     try:

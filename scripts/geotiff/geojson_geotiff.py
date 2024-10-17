@@ -79,8 +79,8 @@ def geojson_to_geotiff(input_geojson, output_geotiff):
         
 if __name__ == "__main__":
     # Specify your input and output files
-    input_geojson = 'input12_wgs84.geojson'  # Change this to your input GeoJSON file
-    output_geotiff = 'output12_32k_deflate.tif'     # Change this to your desired output GeoTIFF file
+    input_geojson = 'modified_splines_WGS84.geojson'  # Change this to your input GeoJSON file
+    output_geotiff = 'modified_splines_WGS84.tif'     # Change this to your desired output GeoTIFF file
     # output_matrix_file = 'raster_matrix.txt'  # Specify the output text file for the matrix
 
     geojson_to_geotiff(input_geojson, output_geotiff)
