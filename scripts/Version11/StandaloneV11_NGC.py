@@ -31,6 +31,8 @@ from georef_outside_ch_entity_delete import delete_entities_outside_boundary
 from delete_layers_set_to_off_in_mem import delete_off_layers_and_entities
 from flatten_lines import flatten3d_lines
 from remove_insert_entities import remove_all_block_references
+from dxf2geojson_converter import convert_dxf_to_geojson
+from LV95_2_WGS84_converter import GeoJSONConverter
 
 """# Check if entities are within bounding box (approximately Switzerland)
 def is_within_bounds(entity, min_x, min_y, max_x, max_y):
@@ -500,7 +502,26 @@ def process_dxf(input_file, output_file, log_file_path):
 	# Step 36: Save the current state to a file
     doc.saveas(output_file)
 
-	# Step 37: Cleanup intermediate files 
+    # Step 37: Convert the DXF to GeoJSON
+    try:
+        geojson_output_file = 'output_LV95.geojson'  # Specify the path for the GeoJSON file
+        convert_dxf_to_geojson(output_file, geojson_output_file)
+        log_operation("DXF has been converted to GeoJSON", True, log_file_path)
+    except Exception as e:
+        log_operation("convert_dxf_to_geojson", False, log_file_path, str(e))
+        raise e
+    
+    # Step 38: Convert GeoJSON from LV95 to WGS84
+    try:
+        transformed_geojson_file = 'output_WGS84.geojson'  # Specify the path for the transformed GeoJSON file
+        converter = GeoJSONConverter(geojson_output_file, transformed_geojson_file)
+        converter.convert()
+        log_operation("GeoJSON has been transformed from LV95 to WGS84", True, log_file_path)
+    except Exception as e:
+        log_operation("GeoJSON conversion from LV95 to WGS84", False, log_file_path, str(e))
+        raise e
+    
+	# Step 39: Cleanup intermediate files 
     for file in intermediate_files:
         try:
             if os.path.exists(file):
@@ -510,7 +531,7 @@ def process_dxf(input_file, output_file, log_file_path):
             log_operation(f"cleanup {file}", False, log_file_path, str(e))
             # Handle the error if necessary
 
-	# Step 38: Count all entities
+	# Step 40: Count all entities
     try:
         doc = ezdxf.readfile(output_file)
         entity_count = count_entities(doc)
