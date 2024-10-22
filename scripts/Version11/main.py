@@ -29,13 +29,12 @@ from entity_counter import count_entities
 from rename_layer import rename_layers_in_memory #, delete_user_coordinate_systems
 from purge import purge_dxf
 from georef_outside_ch_entity_delete import delete_entities_outside_boundary
-# from delete_layers_set_to_off import delete_off_layers_and_entities
 from delete_layers_set_to_off_in_mem import delete_off_layers_and_entities
 from flatten_lines import flatten3d_lines
 from remove_insert_entities import remove_all_block_references
 from dxf2geojson_converter import convert_dxf_to_geojson
 from LV95_2_WGS84_converter import GeoJSONConverter
-from geojson2geotiff import GeoJSONToGeoTIFFConverter
+# from geojson2geotiff import GeoJSONToGeoTIFFConverter
 
 """# Check if entities are within bounding box (approximately Switzerland)
 def is_within_bounds(entity, min_x, min_y, max_x, max_y):
@@ -516,7 +515,7 @@ def process_dxf(input_file, output_file, log_file_path):
         raise e
 
     # Step 39: Convert GeoJSON to GeoTIFF
-    try:
+    """try:
         input_geojson = 'output_WGS84.geojson'
         output_geotiff = 'output.tiff'  # Specify the path for the output GeoTIFF file
         geojson_to_geotiff_converter = GeoJSONToGeoTIFFConverter(input_geojson, output_geotiff)
@@ -524,7 +523,7 @@ def process_dxf(input_file, output_file, log_file_path):
         log_operation("GeoJSON has been converted to GeoTIFF", True, log_file_path)
     except Exception as e:
         log_operation("GeoJSON to GeoTIFF conversion failed", False, log_file_path, str(e))
-        raise e
+        raise e"""
 
 	# Step 40: Cleanup intermediate files 
     for file in intermediate_files:
