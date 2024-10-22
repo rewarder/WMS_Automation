@@ -34,7 +34,6 @@ from flatten_lines import flatten3d_lines
 from remove_insert_entities import remove_all_block_references
 from dxf2geojson_converter import convert_dxf_to_geojson
 from LV95_2_WGS84_converter import GeoJSONConverter
-# from geojson2geotiff import GeoJSONToGeoTIFFConverter
 
 """# Check if entities are within bounding box (approximately Switzerland)
 def is_within_bounds(entity, min_x, min_y, max_x, max_y):
@@ -198,23 +197,14 @@ def process_dxf(input_file, output_file, log_file_path):
 
     # Load the intermediate file
     doc = ezdxf.readfile(current_file)
-    
-    # Step 5: Purge unused elements
-    """try: 
-        # Call the purge function
-        purge_dxf(doc) # Purge unused elements
-        log_operation("Elements have been purged", True, log_file_path)
-    except Exception as e:
-        log_operation("Something went wrong while purging elements", False, log_file_path, str(e))
-        raise e"""
 
     # Step XX: Delete all entities outside CH boundary box
-    """try:
+    try:
         delete_entities_outside_boundary(doc)
         log_operation("Entities outside CH have been deleted", True, log_file_path)
     except Exception as e:
         log_operation("delete_entities_outside_boundary", False, log_file_path, str(e))
-        raise e"""
+        raise e
 
 	# Step 18: Delete Dimension Styles
     try: 
@@ -226,13 +216,31 @@ def process_dxf(input_file, output_file, log_file_path):
         raise e
 
 	# Step 19: Delete Block Definitions
-    """try:
+    try:
         # Call the delete all bock definitions function 
         delete_all_block_definitions(doc)
         log_operation("All block definitions have been deleted", True, log_file_path)
     except Exception as e:
         log_operation("delete_all_block_definitions", False, log_file_path, str(e))
-        raise e"""
+        raise e
+
+    # Step 5: Purge unused elements
+    try: 
+        # Call the purge function
+        purge_dxf(doc) # Purge unused elements
+        log_operation("Elements have been purged", True, log_file_path)
+    except Exception as e:
+        log_operation("Something went wrong while purging elements", False, log_file_path, str(e))
+        raise e
+
+	# Step 19: Delete Block Definitions
+    try:
+        # Call the delete all bock definitions function 
+        delete_all_block_definitions(doc)
+        log_operation("All block definitions have been deleted", True, log_file_path)
+    except Exception as e:
+        log_operation("delete_all_block_definitions", False, log_file_path, str(e))
+        raise e
 
 	# Step 5: Convert Text to Lines based on isocp.shx font
     try:
@@ -497,7 +505,7 @@ def process_dxf(input_file, output_file, log_file_path):
 
     # Step 37: Convert the DXF to GeoJSON
     try:
-        geojson_output_file = 'output_LV95.geojson'  # Specify the path for the GeoJSON file
+        geojson_output_file = '/home/wms/WMS_Automation/output_LV95.geojson'  # Specify the path for the GeoJSON file
         convert_dxf_to_geojson(output_file, geojson_output_file)
         log_operation("DXF has been converted to GeoJSON", True, log_file_path)
     except Exception as e:
@@ -506,7 +514,7 @@ def process_dxf(input_file, output_file, log_file_path):
     
     # Step 38: Convert GeoJSON from LV95 to WGS84
     try:
-        transformed_geojson_file = 'output_WGS84.geojson'  # Specify the path for the transformed GeoJSON file
+        transformed_geojson_file = '/home/wms/WMS_Automation/output_WGS84.geojson'  # Specify the path for the transformed GeoJSON file
         converter = GeoJSONConverter(geojson_output_file, transformed_geojson_file)
         converter.convert()
         log_operation("GeoJSON has been transformed from LV95 to WGS84", True, log_file_path)

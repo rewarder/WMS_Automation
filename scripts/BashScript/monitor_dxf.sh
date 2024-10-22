@@ -14,7 +14,7 @@ process_file() {
     source "/root/venv/bin/activate"
 
     # Run the main.py script with the new DXF file
-    python3 /home/wms/WMS_Automation/scripts/Version7/main.py "$input_file" --output_dir "$OUTPUT_DIR"
+    python3 /home/wms/WMS_Automation/scripts/Version11/main.py "$input_file" --output_dir "$OUTPUT_DIR"
     
     if [ $? -eq 0 ]; then
         echo "File processed successfully: $input_file"
