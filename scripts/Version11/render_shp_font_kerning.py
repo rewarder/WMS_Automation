@@ -9,7 +9,7 @@ from ezdxf.math import Matrix44
 import math
 
 # Hard coded link to the directory that contains the fonts which are to be rendered
-ezdxf.options.support_dirs = ["scripts/Version11/font"]
+ezdxf.options.support_dirs = ["/home/wms/WMS_Automation/scripts/Version11/font"]
 
 # System font cache needs to be rebuilt
 fonts.build_system_font_cache()
