@@ -1,0 +1,3 @@
+Datei Name: 1701/4286/modified_LEU_52_TEL_GR_UG1_0102_C_georef.dxf
+Benutzer E-Mail: m.buechel@terradata.ch
+Bemerkung: test pipeline

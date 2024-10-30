@@ -30,7 +30,8 @@ from purge import purge_dxf
 from georef_outside_ch_entity_delete import delete_entities_outside_boundary
 from delete_layers_set_to_off_in_mem import delete_off_layers_and_entities
 from flatten_lines import flatten3d_lines
-from remove_insert_entities import remove_all_block_references
+# from remove_insert_entities import remove_all_block_references
+# from remove_layouts import remove_all_layouts_except_modelspace
 from dxf2geojson_converter import convert_dxf_to_geojson
 from LV95_2_WGS84_converter import GeoJSONConverter
 
@@ -205,6 +206,14 @@ def process_dxf(input_file, output_file, log_file_path):
         log_operation("delete_entities_outside_boundary", False, log_file_path, str(e))
         raise e
 
+    # Step XX: Remove all layouts except Modelspace
+    """try:
+        remove_all_layouts_except_modelspace(doc)
+        log_operation("All layouts have been deleted", True, log_file_path)
+    except Exception as e:
+        log_operation("remove_all_layouts_except_modelspace", False, log_file_path, str(e))
+        raise e"""
+
 	# Step 18: Delete Dimension Styles
     try: 
         # Call the delete dimensions styles function
@@ -250,12 +259,12 @@ def process_dxf(input_file, output_file, log_file_path):
         raise e
 
 	# Step 6: Delete Insert entities
-    try:
+    """try:
         remove_all_block_references(doc)
         log_operation("Insert entities have been deleted", True, log_file_path)
     except Exception as e:
         log_operation("delete_insert_entities", False, log_file_path, str(e))
-        raise e
+        raise e"""
 
 	# Step 6: Delete Insert entities
     """try:
