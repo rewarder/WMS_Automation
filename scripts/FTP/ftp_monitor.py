@@ -2,60 +2,74 @@ import ftplib
 import os
 import time
 
-FTP_SERVER = "portal.tedamos.com"
-FTP_USER = "mbtiles"
-FTP_PASS = "mb-layer3311"
-REMOTE_DIR = "/plandata"
-LOCAL_DIR = "/home/debian/WMS_Upload/data"
+# FTP server details
+FTP_HOST = 'portal.tedamos.com'
+FTP_USER = 'mbtiles'
+FTP_PASS = 'mb-layer3311'
+FTP_MONITOR_DIR = '/plandata'
 
-def get_file_list(ftp, remote_dir):
-    stack = [remote_dir]
-    file_list = []
+# Local directories
+LOCAL_DIR = '/home/debian/WMS_Upload/data'
+PROCESSED_DIR = '/home/debian/WMS_Upload/data/processed'
 
-    while stack:
-        current_dir = stack.pop()
-        try:
-            ftp.cwd(current_dir)  # Change to the current directory
-            items = ftp.nlst()  # List items in the current directory
+def connect_to_ftp():
+    ftp = ftplib.FTP(FTP_HOST)
+    ftp.login(FTP_USER, FTP_PASS)
+    return ftp
 
-            for item in items:
-                item_path = os.path.join(current_dir, item)
-                try:
-                    ftp.cwd(item_path)  # Try to change into the item (directory)
-                    stack.append(item_path)  # If it's a directory, add it to the stack
-                except ftplib.error_perm:
-                    # If it fails, it's a file; add to the list
-                    file_list.append(item_path)
+def list_files(ftp, path):
+    items = []
+    ftp.cwd(path)
+    ftp.retrlines('MLSD', items.append)
+    return items
 
-            ftp.cwd('..')  # Go back to the parent directory after processing the current one
-        except ftplib.error_perm:
-            print(f"Failed to access {current_dir}: Permission denied")
-            continue  # Skip the current directory if there's an error
+def download_file(ftp, ftp_path, local_path):
+    with open(local_path, 'wb') as f:
+        ftp.retrbinary(f'RETR ' + ftp_path, f.write)
 
-    return file_list
+def monitor_ftp_directory(ftp):
+    known_files = set()
 
-def download_file(ftp, filename, local_dir):
-    local_file_path = os.path.join(local_dir, os.path.basename(filename))
-    with open(local_file_path, 'wb') as local_file:
-        ftp.retrbinary(f'RETR {filename}', local_file.write)
-    print(f"Downloaded: {filename}")
+    while True:
+        new_files = check_for_new_files(ftp, FTP_MONITOR_DIR, known_files)
+        for file in new_files:
+            filename = os.path.basename(file)
+            processed_path = os.path.join(PROCESSED_DIR, filename)
 
-def main():
-    with ftplib.FTP(FTP_SERVER) as ftp:
-        ftp.login(FTP_USER, FTP_PASS)
-        previous_files = set(get_file_list(ftp, REMOTE_DIR))
+            # Check if file already exists in the processed directory
+            if not os.path.exists(processed_path):
+                local_path = os.path.join(LOCAL_DIR, filename)
+                download_file(ftp, file, local_path)
+                print(f'New file downloaded: {local_path}')
+            else:
+                print(f'File already exists in processed: {filename}')
 
-        while True:
-            time.sleep(60)  # Check every 60 seconds
-            current_files = set(get_file_list(ftp, REMOTE_DIR))
-            new_files = current_files - previous_files
+        time.sleep(60)  # Check every 60 seconds
 
-            if new_files:
-                print("New files detected:", new_files)
-                for file in new_files:
-                    download_file(ftp, file, LOCAL_DIR)
+def check_for_new_files(ftp, path, known_files):
+    new_files = []
+    items = list_files(ftp, path)
+    
+    for item in items:
+        parts = item.split(';')
+        type_info = [p for p in parts if p.startswith('type=')][0]
+        name_info = [p for p in parts if p.startswith(' ')][0].strip()
+        entry_type = type_info.split('=')[1]
+        name = name_info
 
-            previous_files = current_files
+        if entry_type == 'file':
+            file_path = os.path.join(path, name)
+            if file_path not in known_files:
+                known_files.add(file_path)
+                new_files.append(file_path)
+        elif entry_type == 'dir':
+            new_files.extend(check_for_new_files(ftp, os.path.join(path, name), known_files))
+    
+    return new_files
 
-if __name__ == "__main__":
-    main()
+if __name__ == '__main__':
+    ftp_connection = connect_to_ftp()
+    try:
+        monitor_ftp_directory(ftp_connection)
+    finally:
+        ftp_connection.quit()
