@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Directory to monitor
-INPUT_DIR="/home/wms/WMS_Automation/data/input"
+INPUT_DIR="/home/debian/WMS_Automation/input"
 PROCESSED_DIR="$INPUT_DIR/processed"
-OUTPUT_DIR="/home/wms/WMS_Automation/output"
+OUTPUT_DIR="/home/debian/WMS_Automation/output"
 
 # Function to trigger the main.py script
 process_file() {
@@ -14,7 +14,7 @@ process_file() {
     # source "/root/venv/bin/activate"
 
     # Run the main.py script with the new DXF file
-    python3 /home/wms/WMS_Automation/scripts/Version11/main.py "$input_file" --output_dir "$OUTPUT_DIR"
+    python3 /home/debian/WMS_Automation/scripts/Version11/main.py "$input_file" --output_dir "$OUTPUT_DIR"
     
     if [ $? -eq 0 ]; then
         echo "File processed successfully: $input_file"
