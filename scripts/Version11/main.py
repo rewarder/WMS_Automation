@@ -508,7 +508,7 @@ def process_dxf(input_file, output_file, log_file_path):
 
     # Step 38: Convert the DXF to GeoJSON
     try:
-        geojson_output_file = '/home/debian/WMS_Automation/output/{base_filename}_LV95.geojson'  # Use the base filename for GeoJSON
+        geojson_output_file = f'/home/debian/WMS_Automation/output/{base_filename}_LV95.geojson'  # Use the base filename for GeoJSON
         convert_dxf_to_geojson(output_file, geojson_output_file)
         log_operation("DXF has been converted to GeoJSON", True, log_file_path)
     except Exception as e:
@@ -517,7 +517,7 @@ def process_dxf(input_file, output_file, log_file_path):
     
     # Step 39: Convert GeoJSON from LV95 to WGS84
     try:
-        transformed_geojson_file = '/home/debian/WMS_Automation/output/{base_filename}]_WGS84.geojson'  # Use the base filename for GeoJSON
+        transformed_geojson_file = f'/home/debian/WMS_Automation/output/{base_filename}_WGS84.geojson'  # Use the base filename for GeoJSON
         converter = GeoJSONConverter(geojson_output_file, transformed_geojson_file)
         converter.convert()
         log_operation("GeoJSON has been transformed from LV95 to WGS84", True, log_file_path)
