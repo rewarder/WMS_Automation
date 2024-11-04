@@ -503,18 +503,21 @@ def process_dxf(input_file, output_file, log_file_path):
 	# Step 36: Save the current state to a file
     doc.saveas(output_file)
 
-    # Step 37: Convert the DXF to GeoJSON
+    # Step 37: Extract the base filename without the extension
+    base_filename = os.path.splitext(os.path.basename(output_file))[0]  # Get the base name of the output DXF file
+
+    # Step 38: Convert the DXF to GeoJSON
     try:
-        geojson_output_file = '/home/wms/WMS_Automation/output/output_LV95.geojson'  # Specify the path for the GeoJSON file
+        geojson_output_file = '/home/debian/WMS_Automation/output/{base_filename}_LV95.geojson'  # Use the base filename for GeoJSON
         convert_dxf_to_geojson(output_file, geojson_output_file)
         log_operation("DXF has been converted to GeoJSON", True, log_file_path)
     except Exception as e:
         log_operation("convert_dxf_to_geojson", False, log_file_path, str(e))
         raise e
     
-    # Step 38: Convert GeoJSON from LV95 to WGS84
+    # Step 39: Convert GeoJSON from LV95 to WGS84
     try:
-        transformed_geojson_file = '/home/wms/WMS_Automation/output/output_WGS84.geojson'  # Specify the path for the transformed GeoJSON file
+        transformed_geojson_file = '/home/debian/WMS_Automation/output/{base_filename}]_WGS84.geojson'  # Use the base filename for GeoJSON
         converter = GeoJSONConverter(geojson_output_file, transformed_geojson_file)
         converter.convert()
         log_operation("GeoJSON has been transformed from LV95 to WGS84", True, log_file_path)
@@ -522,7 +525,7 @@ def process_dxf(input_file, output_file, log_file_path):
         log_operation("GeoJSON conversion from LV95 to WGS84", False, log_file_path, str(e))
         raise e
 
-    # Step 39: Convert GeoJSON to GeoTIFF
+    # Step 40: Convert GeoJSON to GeoTIFF
     """try:
         input_geojson = 'output_WGS84.geojson'
         output_geotiff = 'output.tiff'  # Specify the path for the output GeoTIFF file
@@ -533,7 +536,7 @@ def process_dxf(input_file, output_file, log_file_path):
         log_operation("GeoJSON to GeoTIFF conversion failed", False, log_file_path, str(e))
         raise e"""
 
-	# Step 40: Cleanup intermediate files 
+	# Step 41: Cleanup intermediate files 
     for file in intermediate_files:
         try:
             if os.path.exists(file):
@@ -543,7 +546,7 @@ def process_dxf(input_file, output_file, log_file_path):
             log_operation(f"cleanup {file}", False, log_file_path, str(e))
             # Handle the error if necessary
 
-	# Step 41: Count all entities
+	# Step 42: Count all entities
     try:
         doc = ezdxf.readfile(output_file)
         entity_count = count_entities(doc)
@@ -579,25 +582,50 @@ def process_file(file_path):
         log_operation("Script Execution", False, log_file_path, str(e))
 
 if __name__ == "__main__":
+    # Import necessary modules
+    import argparse
+    import os
+    
+    # Create an argument parser for command-line arguments
     parser = argparse.ArgumentParser(description='Process a DXF file.')
+    
+    # Add a positional argument for the input DXF file path
     parser.add_argument('input_file', type=str, help='The path to the DXF file to be processed.')
+    
+    # Add an optional argument for the output directory
     parser.add_argument('--output_dir', type=str, default=None, help='The directory to save the processed DXF file.')
 
+    # Parse the command-line arguments
     args = parser.parse_args()
 
+    # Get the input file path from arguments
     input_file_path = args.input_file
+    
+    # Split the input file path into directory and filename
     input_dir, input_filename = os.path.split(input_file_path)
+    
+    # Determine the output directory; if not provided, use the input directory
     output_dir = args.output_dir if args.output_dir else input_dir
+    
+    # Create the output file name by prefixing 'modified_' to the input filename
     output_file_name = f"modified_{input_filename}"
+    
+    # Construct the full output file path
     output_file_path = os.path.join(output_dir, output_file_name)
 
-    # Define log file path
+    # Define the log file name based on the input filename
     log_file_name = f"log_{input_filename.replace('.dxf', '')}.txt"
+    
+    # Construct the full log file path
     log_file_path = os.path.join(output_dir, log_file_name)
 
     try:
+        # Attempt to process the DXF file and generate the output and log files
         process_dxf(input_file_path, output_file_path, log_file_path)
+        # Print a success message with the output file path
         print(f"DXF file successfully processed and saved to: {output_file_path}")
     except Exception as e:
+        # Handle any exceptions that occur during processing
         print(f"An error occurred: {e}")
+        # Log the exception details to the log file
         log_operation("Script Execution", False, log_file_path, str(e))  # Log the exception

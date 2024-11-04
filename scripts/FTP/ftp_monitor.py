@@ -9,8 +9,8 @@ FTP_PASS = 'mb-layer3311'
 FTP_MONITOR_DIR = '/plandata'
 
 # Local directories
-LOCAL_DIR = '/home/debian/WMS_Upload/data'
-PROCESSED_DIR = '/home/debian/WMS_Upload/data/processed'
+LOCAL_DIR = '/home/debian/WMS_Automation/input'
+PROCESSED_DIR = '/home/debian/WMS_Automation/processed'
 
 def connect_to_ftp():
     ftp = ftplib.FTP(FTP_HOST)
