@@ -1,43 +1,37 @@
 #!/bin/bash
 
-# Directory to monitor
-INPUT_DIR="/home/debian/WMS_Upload/data"
-PROCESSED_DIR="$INPUT_DIR/processed" 
-OUTPUT_DIR="/home/wms/WMS_Automation/output"
+# Directories
+WATCH_DIR="/home/debian/WMS_Automation/output"
+PROCESSED_DIR="$WATCH_DIR/processed"
 
-# Function to trigger the main.py script
-process_file() {
-    local input_file="$1"
-    echo "New file detected: $input_file"
+# Create the processed directory if it doesn't exist
+mkdir -p "$PROCESSED_DIR"
+
+# Function to process files
+process_files() {
+    geojson_file="$1"
+    json_file="$2"
+    python3 /home/debian/WMS_Upload/src/tedawms/__main__.py --f "$geojson_file" --m "$json_file" -d
     
-    # Change working directory to WMS_upload
-    cd /home/debian/WMS_Upload
-
-    # Activate the virutal environment
-    source ".venv/bin/activate"
-
-    # Run the main.py script with the new DXF file
-    python3 __init__.py --f "data/$input_file" --output_dir "$OUTPUT_DIR" --v
-    
-    if [ $? -eq 0 ]; then
-        echo "File processed successfully: $input_file"
-	# Move the original file to the processed directory
-	mv "$input_file" "$PROCESSED_DIR/"
-	if [ $? -eq 0 ]; then
-		echo "File moved to processed directory: $PROCESSED_DIR/$(basename"$input_file")"
-	else 
-		echo "Failed to move file: $input_file"
-	fi
-    else
-        echo "Failed to process file: $input_file"
-    fi
+    # Move the processed files to the processed directory
+    mv "$geojson_file" "$PROCESSED_DIR"
+    mv "$json_file" "$PROCESSED_DIR"
 }
 
-# Monitor the directory for new DXF files
-inotifywait -m -e close_write --format '%w%f' "$INPUT_DIR" | while read NEW_FILE
-do
-    # Check if the new file has a .dxf extension and does not start with 'inermediate_'
-    if [[ "$NEW_FILE" == *.dxf && $(basename "$NEW_FILE") != intermediate_*.dxf ]]; then
-        process_file "$NEW_FILE"
+# Monitor the directory for new files
+inotifywait -m "$WATCH_DIR" -e create |
+while read -r directory events filename; do
+    if [[ "$filename" == modified_*_WGS84.geojson ]]; then
+        # Introduce a delay to ensure the file is fully copied
+        sleep 5  # Adjust the duration as needed
+        
+        # Find the corresponding JSON file
+        base_name=$(echo "$filename" | sed 's/modified_\(.*\)_WGS84\.geojson/\1/')
+        json_file=$(find "$WATCH_DIR" -name "*$base_name*.json" -print -quit)
+        
+        if [[ -f "$json_file" ]]; then
+            geojson_file="$WATCH_DIR/$filename"
+            process_files "$geojson_file" "$json_file"
+        fi
     fi
 done
